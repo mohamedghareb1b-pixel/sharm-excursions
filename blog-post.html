@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Blog Post — Sharm Excursions</title>
+  <meta name="description" id="metaDesc" content="" />
+  <meta property="og:title" id="ogTitle" content="" />
+  <meta property="og:description" id="ogDesc" content="" />
+  <meta property="og:image" id="ogImage" content="" />
+  <meta property="og:type" content="article" />
+  <meta name="article:published_time" id="ogDate" content="" />
+  <link rel="canonical" id="canonicalLink" href="" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root { --sea:#051e34;--aqua:#0891b2;--teal:#0e7490;--gold:#b8860b;--gold-bright:#e6b822; }
+    * { box-sizing:border-box;margin:0;padding:0; }
+    body { font-family:'DM Sans',sans-serif;background:#ffffff;color:#0f172a; }
+    h1,h2,h3,h4 { font-family:'Playfair Display',serif; }
+
+    /* TOP NAV */
+    .top-nav { position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border-bottom:1px solid #e2e8f0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px; }
+    .back-link { width:38px;height:38px;border-radius:50%;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;text-decoration:none;color:white;font-size:16px; }
+
+    /* HERO IMAGE */
+    .post-hero-img { width:100%;height:260px;object-fit:cover;display:block; }
+
+    /* PROGRESS BAR */
+    .reading-progress { position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--aqua),var(--gold));z-index:200;transition:width 0.1s linear;width:0%; }
+
+    /* ARTICLE BODY */
+    .article-body { font-family:'Lora',serif;font-size:16px;line-height:1.85;color:#1e293b; }
+    .article-body h2 { font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:white;margin:28px 0 10px;line-height:1.3; }
+    .article-body h3 { font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--teal);margin:22px 0 8px; }
+    .article-body p { margin-bottom:18px; }
+    .article-body ul { margin:0 0 18px 20px; }
+    .article-body ul li { margin-bottom:8px;padding-left:4px; }
+    .article-body ol { margin:0 0 18px 20px; }
+    .article-body ol li { margin-bottom:8px; }
+    .article-body strong { color:white;font-weight:700; }
+    .article-body em { color:#475569; }
+    .article-body blockquote { border-left:4px solid var(--aqua);padding:12px 16px;margin:20px 0;background:#f0f9ff;border-radius:0 12px 12px 0;font-style:italic;color:#0369a1; }
+
+    /* TIP BOX */
+    .tip-box { background:#fef3c7;border:1px solid #fde68a;border-radius:14px;padding:16px;margin:20px 0;display:flex;gap:10px; }
+    .tip-box-icon { font-size:22px;flex-shrink:0; }
+    .tip-box-content strong { display:block;font-size:13px;font-weight:700;color:#92400e;margin-bottom:4px; }
+    .tip-box-content p { font-size:13px;color:#78350f;margin:0;font-family:'DM Sans',sans-serif;line-height:1.5; }
+
+    /* NUMBERED ITEM */
+    .numbered-item { display:flex;gap:12px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #f1f5f9; }
+    .numbered-item:last-child { border:none; }
+    .num-badge { width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;margin-top:2px;background:linear-gradient(135deg,var(--sea),var(--aqua));color:white; }
+    .num-content h3 { font-size:16px;font-weight:700;color:white;margin-bottom:4px;font-family:'Playfair Display',serif; }
+    .num-content p { font-size:14px;color:#475569;line-height:1.6;margin:0;font-family:'DM Sans',sans-serif; }
+
+    /* CTA INLINE CARD */
+    .inline-cta { background:linear-gradient(135deg,var(--sea),var(--teal));border-radius:20px;padding:20px;margin:24px 0;text-align:center; }
+    .inline-cta h3 { font-size:18px;color:white;margin-bottom:6px; }
+    .inline-cta p { font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:14px; }
+    .inline-cta a { display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:white;font-weight:700;font-size:14px;padding:12px 24px;border-radius:50px;text-decoration:none; }
+
+    /* AUTHOR BOX */
+    .author-box { display:flex;align-items:center;gap:12px;background:#f8fafc;border-radius:16px;padding:16px;margin:24px 0; }
+    .author-avatar { width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;background:linear-gradient(135deg,var(--aqua),var(--teal));display:flex;align-items:center;justify-content:center;font-size:22px; }
+    .author-name { font-weight:700;font-size:14px;color:white; }
+    .author-bio { font-size:12px;color:#64748b;margin-top:2px;line-height:1.4; }
+
+    /* RELATED POSTS */
+    .related-card { background:#f8fafc;border-radius:16px;overflow:hidden;display:flex;text-decoration:none;color:inherit;border:1px solid #e2e8f0;transition:transform 0.2s; }
+    .related-card:hover { transform:translateY(-2px); }
+    .related-img { width:90px;height:80px;object-fit:cover;flex-shrink:0; }
+    .related-body { padding:10px 12px;flex:1; }
+    .related-cat { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--aqua); }
+    .related-title { font-size:12px;font-weight:700;color:white;line-height:1.3;margin-top:3px;font-family:'Playfair Display',serif; }
+
+    /* SHARE BAR */
+    .share-bar { display:flex;gap:8px;margin:20px 0; }
+    .share-btn { flex:1;padding:11px;border-radius:12px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;transition:all 0.2s; }
+    .share-btn:hover { transform:scale(1.03); }
+
+    /* TABLE OF CONTENTS */
+    .toc { background:#f0f9ff;border:1px solid #bae6fd;border-radius:16px;padding:16px;margin:20px 0; }
+    .toc-title { font-size:12px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px; }
+    .toc-list { list-style:none; }
+    .toc-list li { padding:4px 0;font-size:13px;color:var(--aqua);border-bottom:1px solid #e0f2fe; }
+    .toc-list li:last-child { border:none; }
+    .toc-list a { text-decoration:none;color:var(--aqua);font-weight:500; }
+    .toc-list a:hover { color:white; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+    .animate-in { animation:fadeUp 0.5s ease forwards; }
+  </style>
+</head>
+<body>
+
+<!-- READING PROGRESS BAR -->
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <div class="flex items-center gap-3">
+    <a href="blog.html" class="back-link">←</a>
+    <div class="text-xs text-slate-400 font-semibold" id="navCat">Travel Tips</div>
+  </div>
+  <div class="flex gap-2">
+    <button onclick="sharePost()" class="text-xl">📤</button>
+    <a href="booking.html" class="text-xl">🛒</a>
+  </div>
+</div>
+
+<!-- HERO IMAGE -->
+<img id="heroImg" src="" alt="" class="post-hero-img" />
+
+<!-- ARTICLE -->
+<article class="px-4 pb-12 max-w-lg mx-auto">
+
+  <!-- HEADER -->
+  <div class="mt-5 mb-6 animate-in">
+    <div class="flex items-center gap-2 mb-3 flex-wrap">
+      <span class="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full" style="background:#e0f2fe;color:var(--teal)" id="postCat">Category</span>
+      <span class="text-xs text-slate-400" id="postDate">Date</span>
+      <span class="text-xs text-slate-400" id="postReadTime">Read time</span>
+    </div>
+    <h1 class="text-2xl font-bold leading-tight mb-3" style="color:white" id="postTitle">Post Title</h1>
+    <p class="text-slate-500 text-sm leading-relaxed" id="postExcerpt">Excerpt</p>
+  </div>
+
+  <!-- AUTHOR -->
+  <div class="author-box">
+    <div class="author-avatar">🧭</div>
+    <div>
+      <div class="author-name">Ahmed — Sharm Excursions Team</div>
+      <div class="author-bio">Local expert with 12+ years guiding visitors around Sharm El Sheikh. Born and raised in Sinai.</div>
+    </div>
+  </div>
+
+  <!-- SHARE BAR -->
+  <div class="share-bar">
+    <button class="share-btn" style="background:#25d366;color:white" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    <button class="share-btn" style="background:#e2e8f0;color:#0f172a" onclick="copyLink()">🔗 Copy Link</button>
+  </div>
+
+  <!-- TABLE OF CONTENTS (shown for long posts) -->
+  <div class="toc" id="tocSection" style="display:none">
+    <div class="toc-title">📋 In This Article</div>
+    <ul class="toc-list" id="tocList"></ul>
+  </div>
+
+  <!-- ARTICLE CONTENT -->
+  <div class="article-body" id="articleContent">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- INLINE CTA -->
+  <div class="inline-cta">
+    <h3>Ready to Experience Sharm El Sheikh?</h3>
+    <p>Browse our curated tours — hotel pickup included, pay on arrival.</p>
+    <a href="index.html#tours">🌊 Browse All Excursions</a>
+  </div>
+
+  <!-- TAGS -->
+  <div class="flex flex-wrap gap-2 my-5" id="postTags"></div>
+
+  <!-- RELATED POSTS -->
+  <div>
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--aqua);font-weight:600;margin-bottom:12px">You Might Also Like</div>
+    <div class="space-y-3" id="relatedPosts"></div>
+  </div>
+
+</article>
+
+<script>
+const POSTS_DB = {
+  "best-snorkeling-spots-sharm-el-sheikh": {
+    title: "The 7 Best Snorkeling Spots in Sharm El Sheikh (2025 Guide)",
+    category: "Travel Tips",
+    date: "May 15, 2025",
+    readTime: "6 min read",
+    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900&q=80",
+    excerpt: "From the legendary reefs of Ras Mohammed to the accessible Naama Bay house reef, we rank the best spots for underwater exploration in the Red Sea.",
+    metaTitle: "7 Best Snorkeling Spots in Sharm El Sheikh 2025 | Complete Guide",
+    metaDesc: "Discover the best snorkeling in Sharm El Sheikh: Ras Mohammed, Tiran Island, the Blue Hole, and more. Expert tips, costs, and how to get there.",
+    tags: ["Snorkeling", "Red Sea", "Ras Mohammed", "Sharm El Sheikh", "Travel Tips"],
+    toc: ["1. Ras Mohammed National Park", "2. Tiran Island", "3. Naama Bay House Reef", "4. The Blue Hole (Dahab)", "5. Gordon Reef", "6. Shark's Bay", "7. White Knight Beach"],
+    content: `
+      <p>The Red Sea around Sharm El Sheikh is one of the world's great underwater treasures. Crystal-clear warm water, visibility often exceeding 30 metres, and reefs teeming with hundreds of species of marine life make it genuinely world-class — accessible even to complete beginners. But not all spots are equal.</p>
+
+      <p>After years of guiding visitors around the peninsula, here's our definitive ranking of the best places to strap on a mask and fins.</p>
+
+      <div class="numbered-item">
+        <div class="num-badge">1</div>
+        <div class="num-content">
+          <h3>Ras Mohammed National Park</h3>
+          <p>Egypt's crown jewel of marine conservation. The meeting point of two seas — the Gulf of Suez and the Gulf of Aqaba — creates extraordinary nutrient upwelling. Sharks Wall and Yolanda Reef are among the most famous dive sites on earth, but the snorkeling here is equally jaw-dropping. Visibility is typically 20-35 metres.</p>
+        </div>
+      </div>
+
+      <div class="numbered-item">
+        <div class="num-badge">2</div>
+        <div class="num-content">
+          <h3>Tiran Island</h3>
+          <p>A full-day boat trip to this remote island in the Strait of Tiran reveals four separate reef systems — Jackson, Woodhouse, Thomas and Gordon. The pelagic action here is unmatched: hammerhead sharks (mostly at depth), manta rays, and vast schools of barracuda patrol these waters regularly.</p>
+        </div>
+      </div>
+
+      <div class="numbered-item">
+        <div class="num-badge">3</div>
+        <div class="num-content">
+          <h3>Naama Bay House Reef</h3>
+          <p>The most convenient option — literally steps from the beach. Despite being a shore entry, the reef here is healthy and packed with life: pufferfish, moray eels, lionfish, and clownfish in their anemone homes. Perfect for beginners or a quick morning session before breakfast.</p>
+        </div>
+      </div>
+
+      <div class="numbered-item">
+        <div class="num-badge">4</div>
+        <div class="num-content">
+          <h3>The Blue Hole, Dahab</h3>
+          <p>A 90-minute drive north of Sharm, Dahab's Blue Hole is one of the world's most famous — and most notorious — dive sites. For snorkelers, the shallow rim of this 130-metre deep sinkhole is spectacularly beautiful and perfectly safe. A coral garden of extraordinary density surrounds the entrance.</p>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <div class="tip-box-icon">🌞</div>
+        <div class="tip-box-content">
+          <strong>Best Time to Snorkel</strong>
+          <p>September to November is ideal: water is warm (26-28°C), visibility is at its peak, and crowds are lower than summer. Morning sessions (7-10 AM) offer the calmest conditions and best light.</p>
+        </div>
+      </div>
+
+      <div class="numbered-item">
+        <div class="num-badge">5</div>
+        <div class="num-content">
+          <h3>Gordon Reef</h3>
+          <p>One of the four Tiran Island reefs, Gordon deserves special mention. It's the shallowest of the four and therefore the most accessible for snorkeling. The resident population of reef sharks makes for unforgettable encounters from the surface.</p>
+        </div>
+      </div>
+
+      <div class="numbered-item">
+        <div class="num-badge">6</div>
+        <div class="num-content">
+          <h3>Shark's Bay</h3>
+          <p>Despite the intimidating name, this protected bay is one of the safest and most pleasant spots in Sharm for families. The reef is intact and diverse, with excellent turtle sightings year-round. Several dedicated turtle cleaning stations sit in the shallows.</p>
+        </div>
+      </div>
+
+      <div class="numbered-item">
+        <div class="num-badge">7</div>
+        <div class="num-content">
+          <h3>White Knight Beach</h3>
+          <p>A lesser-known gem near the Marriott zone. The wall reef here drops away dramatically from a sandy shelf, giving snorkelers an exhilarating sense of flying over a vertical coral cliff. Schools of glassfish shimmer in silver clouds near the surface.</p>
+        </div>
+      </div>
+
+      <blockquote>"The Red Sea isn't just a destination — it's an underwater universe. Every dive or snorkel session reveals something you've never seen before." — Ahmed, Sharm Excursions</blockquote>
+
+      <h2>What Equipment Do You Need?</h2>
+      <p>For all boat-based trips booked through us, snorkeling equipment (mask, fins, snorkel, wetsuit if needed) is <strong>included in the price</strong>. If snorkeling from shore, most beaches rent gear for $5-10 per session. Always use <strong>reef-safe sunscreen</strong> — standard chemical sunscreens damage coral and are prohibited in Ras Mohammed National Park.</p>
+
+      <h2>How to Book</h2>
+      <p>Our most popular trip is the <strong>Ras Mohammed full-day snorkeling excursion</strong> — it includes three separate snorkel stops, a buffet lunch on board, and hotel pickup. It consistently earns a perfect 5-star rating from our guests.</p>
+    `,
+  },
+
+  "sharm-el-sheikh-travel-guide-2025": {
+    title: "Sharm El Sheikh Travel Guide: Everything You Need to Know",
+    category: "Destination Guide",
+    date: "April 28, 2025",
+    readTime: "10 min read",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80",
+    excerpt: "Visas, weather, best time to visit, currency, and insider tips from locals — the complete guide to planning your Sharm El Sheikh holiday.",
+    metaTitle: "Sharm El Sheikh Travel Guide 2025 | Visa, Weather, What To Do",
+    metaDesc: "Complete 2025 travel guide to Sharm El Sheikh, Egypt. Visa requirements, best time to visit, currency, getting around, and top activities. Updated May 2025.",
+    tags: ["Travel Guide", "Sharm El Sheikh", "Egypt", "Visa", "Tips", "2025"],
+    toc: ["Getting There & Visas", "Best Time to Visit", "Currency & Costs", "Getting Around", "Top Activities", "Safety Tips"],
+    content: `
+      <p>Sharm El Sheikh — or "Sharm" as regulars affectionately call it — sits at the southern tip of the Sinai Peninsula, where the Gulf of Suez meets the Gulf of Aqaba. It's Egypt's premier beach resort, blessed with year-round sunshine, warm water, and some of the world's finest coral reefs.</p>
+
+      <h2>Getting There & Visas</h2>
+      <p>Sharm El Sheikh International Airport (SSH) receives direct flights from across Europe, Russia, and the Middle East. Most nationalities can obtain a <strong>visa on arrival</strong> for around $25 USD, valid for 30 days and restricted to the Sharm/Sinai region (a full Egypt visa allows travel to Cairo and beyond).</p>
+
+      <div class="tip-box">
+        <div class="tip-box-icon">🛂</div>
+        <div class="tip-box-content">
+          <strong>Visa Tip</strong>
+          <p>If you only plan to visit Sharm and not travel to mainland Egypt, the Sinai-only entry stamp is free. Ask for it specifically at the airport — it saves you $25.</p>
+        </div>
+      </div>
+
+      <h2>Best Time to Visit</h2>
+      <p>Sharm El Sheikh enjoys sunshine almost 365 days a year. However, different months offer different experiences:</p>
+      <ul>
+        <li><strong>October – April:</strong> Peak season. Perfect weather (22-28°C), calm seas, excellent visibility. Book excursions in advance.</li>
+        <li><strong>May – September:</strong> Hot (35-40°C) but excellent for water activities. Red Sea water stays at a blissful 27-29°C. Fewer crowds and lower prices.</li>
+        <li><strong>December – February:</strong> Coolest months. Still warm by European standards (18-22°C). Great for desert safaris.</li>
+      </ul>
+
+      <h2>Currency & Costs</h2>
+      <p>Egypt's official currency is the <strong>Egyptian Pound (EGP)</strong>. However, tourist services in Sharm are almost universally priced in <strong>US Dollars</strong>. You can pay for excursions, taxis, and beach clubs directly in USD or EUR. Carry some small USD bills ($10, $20) for tips and small purchases.</p>
+
+      <h2>Getting Around Sharm</h2>
+      <p>Sharm El Sheikh is spread across several distinct areas. The main tourist zones are Naama Bay, Sharks Bay, and Ras Um Sid. Getting between them requires transport:</p>
+      <ul>
+        <li><strong>Private transfers:</strong> The most comfortable and reliable option. Fixed price, door-to-door. Book through us for guaranteed service.</li>
+        <li><strong>Shared shuttles:</strong> Budget-friendly, typically $4-8 per person between the main areas.</li>
+        <li><strong>Tuk-tuks & taxis:</strong> Negotiate the fare before getting in. Always agree a price first.</li>
+      </ul>
+
+      <h2>Top Activities</h2>
+      <p>Sharm offers something for every type of traveler. Beyond the unmissable snorkeling and diving, the Sinai Desert provides world-class adventure experiences:</p>
+      <ul>
+        <li>🤿 Snorkeling & diving at Ras Mohammed National Park</li>
+        <li>🦒 Quad biking and jeep safaris in the Sinai Desert</li>
+        <li>⛵ Sunset boat trips and day cruises</li>
+        <li>🏖️ VIP beach clubs with infinity pools</li>
+        <li>🌄 Sunrise hike up Mount Sinai (an epic overnight adventure)</li>
+        <li>🐫 Camel treks through Bedouin lands</li>
+      </ul>
+
+      <blockquote>"Sharm manages to be both a complete relaxation destination and an adventure hub at the same time. It's one of very few places on earth where you can do a desert safari in the morning and snorkel with sharks in the afternoon." — Ahmed</blockquote>
+
+      <h2>Safety Tips</h2>
+      <p>Sharm El Sheikh is generally very safe for tourists. Here are a few practical points:</p>
+      <ul>
+        <li>Only swim at designated hotel beaches or supervised areas — currents can be strong away from bays.</li>
+        <li>Drink bottled water only. Avoid ice from unknown sources.</li>
+        <li>Use reef-safe sunscreen at all dive/snorkel sites.</li>
+        <li>Book excursions through reputable operators (like us!) rather than unregulated street vendors.</li>
+        <li>Respect local customs — dress modestly when outside the beach resort areas.</li>
+      </ul>
+    `,
+  },
+
+  "quad-biking-sinai-desert-safari-guide": {
+    title: "Quad Biking in the Sinai: What to Expect on a Desert Safari",
+    category: "Adventure",
+    date: "April 10, 2025",
+    readTime: "5 min read",
+    image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900&q=80",
+    excerpt: "Everything you need to know before booking your first quad bike safari in the Sinai Desert — routes, difficulty, what to wear, and more.",
+    metaTitle: "Quad Biking Sinai Desert: What to Expect | Sharm El Sheikh Guide",
+    metaDesc: "First time quad biking in the Sinai? Our guide covers routes, difficulty levels, what to wear, safety tips and how to book. From $35 with hotel pickup.",
+    tags: ["Safari", "Quad Biking", "Sinai Desert", "Adventure", "Desert Safari"],
+    toc: ["What is a Quad Bike Safari?", "Difficulty Level", "What to Wear", "The Route", "Bedouin Village Stop", "Safety Tips"],
+    content: `
+      <p>The Sinai Desert is one of the world's great natural wonders — an ancient, silent landscape of golden dunes, dramatic granite mountains, and star-filled skies. And there's no better way to experience it than by quad bike.</p>
+
+      <h2>What is a Quad Bike Safari?</h2>
+      <p>A quad bike safari (ATV safari) is a guided off-road excursion into the Sinai Desert. Groups of typically 6-15 people follow a lead guide on powerful four-wheel ATVs through desert tracks, dunes, and Bedouin pathways. Sessions usually last 2-4 hours and depart twice daily — morning and sunset.</p>
+
+      <div class="tip-box">
+        <div class="tip-box-icon">🕐</div>
+        <div class="tip-box-content">
+          <strong>Best Time: Sunset Departure</strong>
+          <p>The 3:00 PM departure catches the golden hour light over the dunes — the most photogenic conditions and much cooler temperatures than the morning run in summer.</p>
+        </div>
+      </div>
+
+      <h2>Difficulty Level</h2>
+      <p>No experience is necessary. The ATVs are automatic (twist-and-go throttle), and the guide provides a full 15-minute briefing before departure. Children aged 8+ can ride as a passenger behind an adult. Teenagers (14+) with an adult present can typically ride solo — check with your operator.</p>
+
+      <h2>What to Wear</h2>
+      <ul>
+        <li><strong>Clothing:</strong> Light, long-sleeved top (protects from sun and sand). Closed-toe shoes are essential.</li>
+        <li><strong>Eye protection:</strong> Goggles are provided, but bring sunglasses as backup.</li>
+        <li><strong>Sunscreen:</strong> Apply before departure — you'll be in direct sun.</li>
+        <li><strong>Camera:</strong> A phone or small camera will capture incredible shots. Avoid expensive DSLRs due to dust.</li>
+      </ul>
+
+      <h2>The Route</h2>
+      <p>Most Sharm El Sheikh quad bike tours follow a similar circuit into the desert east of the city. After a hotel pickup (usually 30-60 minutes drive to the departure point), the route winds through flat desert plains, up and over sand dunes, and along ancient Bedouin camel trails. The landscape changes dramatically — from soft golden dunes to rocky red mountains and back again.</p>
+
+      <h2>The Bedouin Village Stop</h2>
+      <p>Every quad bike safari includes a stop at a traditional Bedouin camp. Here, you'll be welcomed by the Bedouin people — the indigenous inhabitants of the Sinai — with sweet mint tea and, on evening tours, a small fire. It's a genuine cultural encounter, not a tourist performance.</p>
+
+      <blockquote>"The Sinai Bedouin have lived in this desert for thousands of years. Sitting with them under a sky thick with stars, drinking tea, you feel the full weight of that history." — Ahmed</blockquote>
+
+      <h2>Safety Tips</h2>
+      <ul>
+        <li>Always follow the guide — never overtake or leave the group.</li>
+        <li>Wear your helmet and goggles at all times while riding.</li>
+        <li>Keep a safe distance from the quad ahead.</li>
+        <li>Stay hydrated — bring a bottle of water.</li>
+        <li>Not recommended for pregnant women or those with back/neck injuries.</li>
+      </ul>
+    `,
+  },
+};
+
+const ALL_POSTS_LIST = [
+  { slug:"best-snorkeling-spots-sharm-el-sheikh", title:"The 7 Best Snorkeling Spots in Sharm El Sheikh", category:"Travel Tips", image:"https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=200&q=80" },
+  { slug:"sharm-el-sheikh-travel-guide-2025", title:"Sharm El Sheikh Travel Guide 2025", category:"Destination Guide", image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80" },
+  { slug:"quad-biking-sinai-desert-safari-guide", title:"Quad Biking in the Sinai Desert: What to Expect", category:"Adventure", image:"https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80" },
+];
+
+function getSlug() {
+  return new URLSearchParams(window.location.search).get('slug') || 'best-snorkeling-spots-sharm-el-sheikh';
+}
+
+function initPost() {
+  const slug = getSlug();
+  const post = POSTS_DB[slug] || POSTS_DB['best-snorkeling-spots-sharm-el-sheikh'];
+
+  // SEO META
+  document.title = post.metaTitle;
+  document.getElementById('pageTitle').textContent = post.metaTitle;
+  document.getElementById('metaDesc').content = post.metaDesc;
+  document.getElementById('ogTitle').content = post.metaTitle;
+  document.getElementById('ogDesc').content = post.metaDesc;
+  document.getElementById('ogImage').content = post.image;
+  document.getElementById('canonicalLink').href = `https://sharmexcursions.com/blog/${slug}`;
+
+  // HERO
+  const heroImg = document.getElementById('heroImg');
+  heroImg.src = post.image;
+  heroImg.alt = post.title;
+
+  // HEADER
+  document.getElementById('navCat').textContent = post.category;
+  document.getElementById('postCat').textContent = post.category;
+  document.getElementById('postDate').textContent = post.date;
+  document.getElementById('postReadTime').textContent = '📖 ' + post.readTime;
+  document.getElementById('postTitle').textContent = post.title;
+  document.getElementById('postExcerpt').textContent = post.excerpt;
+
+  // TABLE OF CONTENTS
+  if (post.toc && post.toc.length > 0) {
+    document.getElementById('tocSection').style.display = 'block';
+    document.getElementById('tocList').innerHTML = post.toc.map(item =>
+      `<li><a href="#">${item}</a></li>`
+    ).join('');
+  }
+
+  // CONTENT
+  document.getElementById('articleContent').innerHTML = post.content;
+
+  // TAGS
+  if (post.tags) {
+    document.getElementById('postTags').innerHTML = post.tags.map(tag =>
+      `<span style="background:#f0f9ff;color:var(--teal);border:1px solid #bae6fd;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:600">#${tag}</span>`
+    ).join('');
+  }
+
+  // RELATED POSTS
+  const related = ALL_POSTS_LIST.filter(p => p.slug !== slug).slice(0, 2);
+  document.getElementById('relatedPosts').innerHTML = related.map(p => `
+    <a href="blog-post.html?slug=${p.slug}" class="related-card">
+      <img src="${p.image}" alt="${p.title}" class="related-img" loading="lazy" />
+      <div class="related-body">
+        <div class="related-cat">${p.category}</div>
+        <div class="related-title">${p.title}</div>
+      </div>
+    </a>`).join('');
+}
+
+// READING PROGRESS
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = (window.scrollY / total) * 100;
+  document.getElementById('readingProgress').style.width = pct + '%';
+});
+
+function sharePost() {
+  if (navigator.share) {
+    navigator.share({ title: document.title, url: window.location.href });
+  } else { copyLink(); }
+}
+
+function shareWhatsApp() {
+  const msg = encodeURIComponent(`Great read: ${document.title}\n${window.location.href}`);
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    alert('Link copied to clipboard!');
+  });
+}
+
+initPost();
+</script>
+</body>
+</html>

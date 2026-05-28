@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Your Tours — Sharm Excursions</title>
+  <meta name="description" content="Complete your booking for Sharm El Sheikh tours. Pay on arrival. No hidden fees."/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--sea:#051e34;--sea2:#0a2d4a;--aqua:#0891b2;--teal:#0e7490;--gold:#b8860b;--gold-bright:#e6b822;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{overflow-x:hidden;}
+    body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#0f172a;}
+    h1,h2,h3{font-family:'Playfair Display',serif;}
+
+    .top-nav{position:sticky;top:0;z-index:50;background:rgba(5,30,52,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 16px;display:flex;align-items:center;gap:12px;}
+    .back-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:white;font-size:18px;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+
+    /* STEPS */
+    .steps{display:flex;align-items:center;justify-content:center;gap:0;padding:16px 20px;}
+    .step{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#94a3b8;flex:1;}
+    .step.active{color:var(--aqua);}
+    .step.done{color:var(--teal);}
+    .step-circle{width:26px;height:26px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:white;}
+    .step.active .step-circle{border-color:var(--aqua);background:var(--aqua);color:white;}
+    .step.done .step-circle{border-color:var(--teal);background:var(--teal);color:white;}
+    .step-line{flex:1;height:2px;background:#e2e8f0;max-width:32px;}
+    .step-line.done{background:var(--teal);}
+
+    /* FORM CARD */
+    .form-card{background:white;border-radius:18px;padding:18px;border:1px solid #e8edf2;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .form-card-title{font-size:15px;font-weight:700;color:var(--sea2);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+
+    /* FIELDS */
+    .fl{margin-bottom:13px;}
+    .fl:last-child{margin-bottom:0;}
+    .fl label{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:5px;}
+    .fi{width:100%;padding:12px 14px;border-radius:11px;border:1.5px solid #e2e8f0;font-size:14px;font-family:'DM Sans',sans-serif;background:white;outline:none;color:#0f172a;-webkit-appearance:none;transition:border-color 0.2s;}
+    .fi:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(8,145,178,0.1);}
+    .fi.err{border-color:#ef4444;}
+    .phone-row{display:flex;gap:7px;}
+    .phone-code{width:105px;flex-shrink:0;padding:12px 10px;}
+
+    /* COUNTER */
+    .counter-wrap{display:flex;align-items:center;gap:4px;}
+    .cnt-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid #e2e8f0;background:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;color:var(--sea2);transition:all 0.2s;flex-shrink:0;}
+    .cnt-btn:hover{background:var(--sea2);color:white;border-color:var(--sea2);}
+    .cnt-val{flex:1;text-align:center;font-size:19px;font-weight:800;color:var(--sea2);font-family:'Playfair Display',serif;}
+    .cnt-desc{font-size:10px;color:#64748b;text-align:center;margin-top:2px;}
+
+    /* CART ITEMS */
+    .cart-item{background:white;border-radius:14px;padding:13px;border:1px solid #e8edf2;margin-bottom:8px;position:relative;}
+    .ci-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--sea2);line-height:1.3;margin-bottom:6px;padding-right:28px;}
+    .ci-prices{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;}
+    .ci-price-chip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;background:#f0f9ff;color:var(--teal);border:1px solid #bae6fd;}
+    .ci-subtotal{font-size:14px;font-weight:800;color:var(--sea2);text-align:right;margin-top:4px;}
+    .ci-remove{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;background:#fee2e2;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#dc2626;}
+    .ci-date{display:flex;align-items:center;gap:8px;margin-top:8px;}
+    .ci-date label{font-size:10px;font-weight:700;color:#64748b;white-space:nowrap;text-transform:uppercase;}
+    .ci-date input{flex:1;padding:8px 10px;border-radius:9px;border:1.5px solid #e2e8f0;font-size:12px;font-family:'DM Sans',sans-serif;color:#0f172a;outline:none;}
+    .ci-date input:focus{border-color:var(--aqua);}
+
+    /* PRICE SUMMARY */
+    .price-summary{background:white;border-radius:18px;border:1px solid #e8edf2;overflow:hidden;margin-bottom:14px;}
+    .pr-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 14px;border-bottom:1px solid #f8fafc;font-size:13px;}
+    .pr-row:last-child{border:none;}
+    .pr-row.total{background:linear-gradient(135deg,var(--sea),var(--sea2));color:white;}
+    .pr-total-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--gold-bright);}
+
+    /* SUBMIT */
+    .submit-btn{width:100%;padding:16px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:white;font-size:16px;font-weight:800;font-family:'DM Sans',sans-serif;box-shadow:0 6px 22px rgba(180,134,11,0.4);transition:all 0.3s;}
+    .submit-btn:active{transform:scale(0.98);}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:50px 20px;}
+
+    /* SUCCESS MODAL */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+    .modal-bg.show{opacity:1;pointer-events:all;}
+    .modal-sheet{background:white;border-radius:28px 28px 0 0;padding:28px 20px 44px;width:100%;max-width:480px;transform:translateY(100%);transition:transform 0.4s ease;text-align:center;}
+    .modal-bg.show .modal-sheet{transform:translateY(0);}
+
+    /* BOTTOM NAV */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(24px);border-top:1px solid #e8edf2;display:flex;justify-content:space-around;align-items:center;padding:8px 0 calc(8px + env(safe-area-inset-bottom));}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#94a3b8;font-size:10px;font-weight:600;min-width:52px;}
+    .nav-item.active{color:var(--aqua);}
+    .nav-icon{font-size:22px;line-height:1;}
+
+    .toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--sea2);color:white;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;z-index:400;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  </style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="top-nav">
+  <a href="index.html" class="back-btn">←</a>
+  <div>
+    <div style="font-weight:700;font-size:14px;color:white">My Booking Cart</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.45)">Sharm El Sheikh Excursions</div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps" style="max-width:480px;margin:0 auto">
+  <div class="step done"><div class="step-circle">✓</div><span>Choose</span></div>
+  <div class="step-line done"></div>
+  <div class="step active"><div class="step-circle">2</div><span>Details</span></div>
+  <div class="step-line"></div>
+  <div class="step"><div class="step-circle">3</div><span>Confirm</span></div>
+</div>
+
+<main style="padding:0 16px 90px;max-width:480px;margin:0 auto">
+
+  <!-- EMPTY -->
+  <div id="emptyState" class="empty-state" style="display:none">
+    <div style="font-size:56px;margin-bottom:12px">🛒</div>
+    <h2 style="font-size:20px;font-weight:700;color:var(--sea2);margin-bottom:8px">Your cart is empty</h2>
+    <p style="color:#64748b;font-size:13px;margin-bottom:20px">Tap the ❤️ on any tour to add it here</p>
+    <a href="index.html" style="display:inline-block;padding:12px 28px;border-radius:50px;background:var(--sea2);color:white;font-weight:700;font-size:13px;text-decoration:none">Browse Tours →</a>
+  </div>
+
+  <div id="cartContent">
+
+    <!-- CART ITEMS -->
+    <div class="form-card">
+      <div class="form-card-title">🗺️ Your Selected Tours</div>
+      <div id="cartItems"></div>
+      <a href="index.html" style="display:block;text-align:center;font-size:12px;font-weight:700;color:var(--aqua);margin-top:8px;text-decoration:none">+ Add More Tours</a>
+    </div>
+
+    <!-- GUEST INFO -->
+    <div class="form-card">
+      <div class="form-card-title">👤 Guest Information</div>
+      <div class="fl">
+        <label for="fullName">Full Name *</label>
+        <input type="text" id="fullName" class="fi" placeholder="e.g. John Smith" autocomplete="name"/>
+      </div>
+      <div class="fl">
+        <label for="hotelName">Hotel Name *</label>
+        <input type="text" id="hotelName" class="fi" placeholder="e.g. Rixos Sharm El Sheikh"/>
+      </div>
+      <div class="fl">
+        <label>WhatsApp Number *</label>
+        <div class="phone-row">
+          <select class="fi phone-code" id="countryCode">
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+39">🇮🇹 +39</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+48">🇵🇱 +48</option>
+            <option value="+31">🇳🇱 +31</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+46">🇸🇪 +46</option>
+            <option value="+45">🇩🇰 +45</option>
+            <option value="+41">🇨🇭 +41</option>
+            <option value="+43">🇦🇹 +43</option>
+            <option value="+20">🇪🇬 +20</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+90">🇹🇷 +90</option>
+            <option value="+30">🇬🇷 +30</option>
+            <option value="+36">🇭🇺 +36</option>
+            <option value="+40">🇷🇴 +40</option>
+            <option value="+380">🇺🇦 +380</option>
+          </select>
+          <input type="tel" id="whatsapp" class="fi" placeholder="7911 123456"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSENGERS -->
+    <div class="form-card">
+      <div class="form-card-title">👨‍👩‍👧‍👦 Passengers</div>
+      <div style="background:#f8fafc;border-radius:10px;padding:10px;font-size:11px;color:#64748b;margin-bottom:14px;line-height:1.5">
+        Adults full price · Children (4–9) half price · Infants under 4 <strong style="color:#10b981">FREE</strong>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div>
+          <div style="font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Adults</div>
+          <div class="counter-wrap"><button class="cnt-btn" onclick="chg('adults',-1)">−</button><div><div class="cnt-val" id="adultsVal">1</div><div class="cnt-desc">Full price</div></div><button class="cnt-btn" onclick="chg('adults',1)">+</button></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Children</div>
+          <div class="counter-wrap"><button class="cnt-btn" onclick="chg('children',-1)">−</button><div><div class="cnt-val" id="childrenVal">0</div><div class="cnt-desc">Half price</div></div><button class="cnt-btn" onclick="chg('children',1)">+</button></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Infants</div>
+          <div class="counter-wrap"><button class="cnt-btn" onclick="chg('infants',-1)">−</button><div><div class="cnt-val" id="infantsVal">0</div><div class="cnt-desc" style="color:#10b981;font-weight:700">FREE</div></div><button class="cnt-btn" onclick="chg('infants',1)">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIAL REQUESTS -->
+    <div class="form-card">
+      <div class="form-card-title">💬 Special Requests</div>
+      <textarea id="specialReqs" class="fi" rows="3" placeholder="Dietary requirements, accessibility needs, or any notes…" style="resize:none;line-height:1.55"></textarea>
+    </div>
+
+    <!-- PRICE SUMMARY -->
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--aqua);font-weight:700;margin-bottom:8px">Price Breakdown</div>
+    <div class="price-summary" id="priceSummary"></div>
+
+    <!-- PAY ON ARRIVAL -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:16px;padding:14px;display:flex;gap:10px;margin-bottom:14px">
+      <span style="font-size:22px">💳</span>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#15803d">Pay on Arrival — Zero Risk</div>
+        <div style="font-size:11px;color:#16a34a;margin-top:3px;line-height:1.5">No payment now. Pay cash to our guide on the day. Prices include everything — no taxes, no booking fees.</div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitBooking()">✦ Confirm via WhatsApp</button>
+    <div style="text-align:center;font-size:10px;color:#94a3b8;margin-top:10px;margin-bottom:4px">Booking confirmation sent within minutes on WhatsApp</div>
+
+  </div>
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Home</span></a>
+  <a href="index.html#tours" class="nav-item"><span class="nav-icon">🏍️</span><span>Safari</span></a>
+  <a href="booking.html" class="nav-item active"><span class="nav-icon">🛒</span><span>Book</span></a>
+  <a href="wishlist.html" class="nav-item"><span class="nav-icon">❤️</span><span>Saved</span></a>
+  <a href="about.html" class="nav-item"><span class="nav-icon">ℹ️</span><span>About</span></a>
+</nav>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-bg" id="successModal">
+  <div class="modal-sheet">
+    <div style="font-size:60px;margin-bottom:12px">🎉</div>
+    <h2 style="font-size:22px;font-weight:800;color:var(--sea2);margin-bottom:6px">Booking Sent!</h2>
+    <p style="color:#64748b;font-size:13px;margin-bottom:8px">Your details have been sent via WhatsApp. Our team confirms within minutes.</p>
+    <div id="confirmRef" style="display:inline-block;background:#fef3c7;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:800;color:var(--sea2);margin-bottom:18px">REF: —</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;text-align:left">
+      <div style="display:flex;gap:8px;padding:10px;background:#f0fdf4;border-radius:10px"><span style="font-size:18px">✅</span><div><div style="font-size:12px;font-weight:700;color:#15803d">Confirmed on WhatsApp</div><div style="font-size:11px;color:#16a34a">Save the confirmation message</div></div></div>
+      <div style="display:flex;gap:8px;padding:10px;background:#eff6ff;border-radius:10px"><span style="font-size:18px">🏨</span><div><div style="font-size:12px;font-weight:700;color:#1d4ed8">We'll pick you up at your hotel</div><div style="font-size:11px;color:#3b82f6">No travel needed — we come to you</div></div></div>
+      <div style="display:flex;gap:8px;padding:10px;background:#fefce8;border-radius:10px"><span style="font-size:18px">💵</span><div><div style="font-size:12px;font-weight:700;color:#ca8a04">Pay cash on arrival</div><div style="font-size:11px;color:#d97706">No payment required now</div></div></div>
+    </div>
+    <button onclick="window.location.href='index.html'" style="width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:white;font-size:15px;font-weight:800;font-family:'DM Sans',sans-serif">Back to Home 🏠</button>
+  </div>
+</div>
+
+<script>
+let cart=JSON.parse(localStorage.getItem('sharmCart')||'[]');
+let pax={adults:1,children:0,infants:0};
+
+function saveCart(){localStorage.setItem('sharmCart',JSON.stringify(cart));}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+function renderCart(){
+  const el=document.getElementById('cartItems');
+  const empty=document.getElementById('emptyState');
+  const content=document.getElementById('cartContent');
+  const dateFields=document.getElementById('tourDateFieldsContainer');
+
+  if(cart.length===0){empty.style.display='block';content.style.display='none';return;}
+  empty.style.display='none';content.style.display='block';
+
+  el.innerHTML=cart.map(item=>{
+    const aSub=item.price*pax.adults;
+    const cSub=item.childPrice*pax.children;
+    const sub=aSub+cSub;
+    return`<div class="cart-item" id="ci-${item.id}">
+      <div class="ci-title">${item.title}</div>
+      <div class="ci-prices">
+        <span class="ci-price-chip">$${item.price}/adult</span>
+        <span class="ci-price-chip">$${item.childPrice}/child</span>
+        <span class="ci-price-chip" style="background:#f0fdf4;color:#15803d;border-color:#bbf7d0">Free/infant</span>
+      </div>
+      <div class="ci-date">
+        <label>Date:</label>
+        <input type="date" id="date-${item.id}" min="${new Date().toISOString().split('T')[0]}"/>
+      </div>
+      <div class="ci-subtotal" id="sub-${item.id}">Subtotal: $${sub.toFixed(2)}</div>
+      <button class="ci-remove" onclick="removeItem('${item.id}')">✕</button>
+    </div>`;
+  }).join('');
+
+  renderSummary();
+}
+
+function renderSummary(){
+  const el=document.getElementById('priceSummary');
+  let total=0;
+  let rows=cart.map(item=>{
+    const sub=(item.price*pax.adults)+(item.childPrice*pax.children);
+    total+=sub;
+    const shortTitle=item.title.replace('Sharm El Sheikh: ','');
+    document.getElementById('sub-'+item.id)&&(document.getElementById('sub-'+item.id).textContent=`Subtotal: $${sub.toFixed(2)}`);
+    return`<div class="pr-row">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#334155;max-width:200px">${shortTitle}</div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:2px">
+          ${pax.adults} adult${pax.adults!==1?'s':''} × $${item.price}
+          ${pax.children>0?` + ${pax.children} child${pax.children!==1?'ren':''} × $${item.childPrice}`:''}
+          ${pax.infants>0?` + ${pax.infants} infant${pax.infants!==1?'s':''} (free)`:''}
+        </div>
+      </div>
+      <div style="font-weight:700;color:#0f172a;white-space:nowrap">$${sub.toFixed(2)}</div>
+    </div>`;
+  }).join('');
+  rows+=`<div class="pr-row"><div style="font-size:12px;color:#64748b">Taxes & Booking Fees</div><div style="font-weight:700;color:#10b981">$0.00 ✓</div></div>`;
+  rows+=`<div class="pr-row total"><div><div style="font-weight:700;font-size:13px">TOTAL DUE ON ARRIVAL</div><div style="font-size:10px;opacity:0.65;margin-top:2px">Cash only · No advance payment</div></div><div class="pr-total-val">$${total.toFixed(2)}</div></div>`;
+  el.innerHTML=rows;
+}
+
+function removeItem(id){
+  cart=cart.filter(c=>c.id!==id);
+  saveCart();renderCart();showToast('Removed from cart');
+}
+
+function chg(type,delta){
+  const min=type==='adults'?1:0;
+  pax[type]=Math.max(min,pax[type]+delta);
+  document.getElementById(`${type}Val`).textContent=pax[type];
+  renderCart();
+}
+
+function validate(){
+  let ok=true;
+  ['fullName','hotelName','whatsapp'].forEach(id=>{
+    const e=document.getElementById(id);
+    if(!e.value.trim()){e.classList.add('err');ok=false;}
+    else e.classList.remove('err');
+  });
+  cart.forEach(item=>{
+    const d=document.getElementById('date-'+item.id);
+    if(d&&!d.value){d.style.borderColor='#ef4444';ok=false;}
+    else if(d)d.style.borderColor='#e2e8f0';
+  });
+  if(!ok)showToast('⚠️ Please fill all required fields');
+  return ok;
+}
+
+function submitBooking(){
+  if(!validate())return;
+  const name=document.getElementById('fullName').value.trim();
+  const hotel=document.getElementById('hotelName').value.trim();
+  const phone=document.getElementById('countryCode').value+document.getElementById('whatsapp').value.trim();
+  const special=document.getElementById('specialReqs').value.trim();
+  let total=0;
+  const tourLines=cart.map(item=>{
+    const d=document.getElementById('date-'+item.id);
+    const date=d?d.value:'TBD';
+    const sub=(item.price*pax.adults)+(item.childPrice*pax.children);
+    total+=sub;
+    return`  • ${item.title}\n    Date: ${date} | Subtotal: $${sub.toFixed(2)}`;
+  }).join('\n');
+  const ref='SE'+Date.now().toString().slice(-6);
+  const msg=`🌊 *New Booking — Sharm Excursions*\n📋 Ref: ${ref}\n\n👤 *Guest:* ${name}\n🏨 *Hotel:* ${hotel}\n📱 *WhatsApp:* ${phone}\n\n🗺️ *Tours:*\n${tourLines}\n\n👥 *Passengers:*\n  Adults: ${pax.adults}\n  Children (4-9): ${pax.children}\n  Infants (<4): ${pax.infants} (FREE)\n\n💰 *Total on Arrival: $${total.toFixed(2)}*${special?`\n\n💬 *Special Requests:* ${special}`:''}\n\n✅ Pay cash on arrival — no advance payment needed.`;
+  document.getElementById('confirmRef').textContent=`REF: ${ref}`;
+  document.getElementById('successModal').classList.add('show');
+  localStorage.removeItem('sharmCart');cart=[];
+  setTimeout(()=>window.open(`https://wa.me/20123456789?text=${encodeURIComponent(msg)}`,'_blank'),600);
+}
+
+document.querySelectorAll('.fi').forEach(f=>f.addEventListener('input',()=>f.classList.remove('err')));
+renderCart();
+</script>
+</body>
+</html>
