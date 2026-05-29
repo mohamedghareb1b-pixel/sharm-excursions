@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — Sharm Excursions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --sea:#051e34; --sea2:#0a2d4a; --aqua:#0891b2;
+      --teal:#0e7490; --gold:#b8860b; --gold-bright:#e6b822;
+      --sidebar-w:240px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{overflow-x:hidden;height:100%;}
+    body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:#0f172a;}
+    h1,h2,h3{font-family:'Playfair Display',serif;}
+
+    /* ── LAYOUT ── */
+    .layout{display:flex;min-height:100vh;}
+    .sidebar{width:var(--sidebar-w);background:var(--sea);flex-shrink:0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;transition:transform 0.3s;}
+    .sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.07);}
+    .logo-name{font-family:'Playfair Display',serif;font-size:18px;color:white;}
+    .logo-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+    .nav-section{padding:14px 0;}
+    .nav-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:6px 18px 4px;}
+    .nav-link{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.65);text-decoration:none;cursor:pointer;transition:all 0.2s;border:none;background:none;width:100%;text-align:left;}
+    .nav-link:hover{background:rgba(255,255,255,0.07);color:white;}
+    .nav-link.active{background:rgba(8,145,178,0.2);color:var(--gold-bright);border-left:3px solid var(--gold-bright);}
+    .nav-icon{font-size:16px;width:20px;text-align:center;}
+
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:white;border-bottom:1px solid #e2e8f0;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+    .topbar-title{font-size:16px;font-weight:700;color:var(--sea2);}
+    .topbar-right{display:flex;align-items:center;gap:12px;}
+    .view-site-btn{padding:7px 16px;border-radius:8px;background:var(--sea2);color:white;font-size:12px;font-weight:700;text-decoration:none;}
+    .notif-badge{background:#ef4444;color:white;border-radius:50%;width:18px;height:18px;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+    .content{padding:24px;flex:1;}
+
+    /* ── PANELS ── */
+    .panel{display:none;}
+    .panel.active{display:block;}
+
+    /* ── CARDS ── */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+    .stat-card{background:white;border-radius:14px;padding:16px;border:1px solid #e8edf2;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .stat-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--sea2);}
+    .stat-lbl{font-size:11px;color:#64748b;margin-top:2px;}
+    .stat-trend{font-size:11px;font-weight:700;margin-top:4px;}
+
+    /* ── BOOKING TABLE ── */
+    .bookings-wrap{background:white;border-radius:16px;border:1px solid #e8edf2;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .table-header{padding:16px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;}
+    .booking-row{display:grid;grid-template-columns:1fr 1fr 1fr 100px 80px;gap:12px;padding:12px 18px;border-bottom:1px solid #f8fafc;align-items:center;font-size:13px;}
+    .booking-row:last-child{border:none;}
+    .booking-row:hover{background:#f8fafc;}
+    .booking-name{font-weight:700;color:var(--sea2);}
+    .booking-hotel{color:#64748b;font-size:12px;}
+    .booking-tour{font-size:12px;color:#475569;}
+    .booking-total{font-weight:800;color:var(--sea2);}
+    .status-pill{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+    .status-new{background:#dbeafe;color:#1d4ed8;}
+    .status-confirmed{background:#dcfce7;color:#15803d;}
+    .status-pending{background:#fef3c7;color:#92400e;}
+    .table-head-row{display:grid;grid-template-columns:1fr 1fr 1fr 100px 80px;gap:12px;padding:10px 18px;background:#f8fafc;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;border-bottom:1px solid #e8edf2;}
+    .empty-bookings{text-align:center;padding:40px;color:#94a3b8;}
+
+    /* ── FORM ELEMENTS ── */
+    .card-box{background:white;border-radius:16px;padding:20px;border:1px solid #e8edf2;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .card-box-title{font-size:14px;font-weight:700;color:var(--sea2);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .fi{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:13px;font-family:'DM Sans',sans-serif;background:white;outline:none;color:#0f172a;transition:border-color 0.2s;}
+    .fi:focus{border-color:var(--aqua);}
+    .label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;}
+    .fl{margin-bottom:12px;}
+    .fl:last-child{margin-bottom:0;}
+    .btn-primary{padding:9px 18px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all 0.2s;}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(180,134,11,0.35);}
+    .btn-secondary{padding:9px 18px;border-radius:9px;background:#f1f5f9;color:var(--sea2);font-size:13px;font-weight:700;border:1px solid #e2e8f0;cursor:pointer;}
+    .btn-danger{padding:9px 18px;border-radius:9px;background:#fee2e2;color:#dc2626;font-size:13px;font-weight:700;border:none;cursor:pointer;}
+    .btn-sm{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;}
+    .btn-sm-edit{background:#eff6ff;color:#2563eb;}
+    .btn-sm-del{background:#fee2e2;color:#dc2626;}
+    .btn-sm-save{background:#dcfce7;color:#15803d;}
+
+    /* ── TOUR CARDS ADMIN ── */
+    .tour-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+    .tour-admin-card{background:white;border-radius:14px;border:1px solid #e8edf2;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .tac-img{width:100%;height:140px;object-fit:cover;display:block;}
+    .tac-body{padding:14px;}
+    .tac-title{font-weight:700;font-size:13px;color:var(--sea2);margin-bottom:4px;line-height:1.35;}
+    .tac-price{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--sea2);}
+    .tac-actions{display:flex;gap:6px;margin-top:10px;}
+    .tac-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:#f0f9ff;color:var(--teal);border:1px solid #bae6fd;}
+    .tac-active{background:#dcfce7;color:#15803d;border-color:#86efac;}
+    .tac-inactive{background:#fee2e2;color:#dc2626;border-color:#fca5a5;}
+
+    /* ── ICON GRID ── */
+    .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;}
+    .icon-item{background:white;border-radius:12px;padding:14px;text-align:center;border:1.5px solid #e8edf2;cursor:pointer;transition:all 0.2s;}
+    .icon-item:hover{border-color:var(--aqua);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+    .icon-display{font-size:28px;margin-bottom:6px;}
+    .icon-label{font-size:10px;font-weight:700;color:#64748b;}
+
+    /* ── TOGGLE ── */
+    .toggle-wrap{display:flex;align-items:center;gap:10px;}
+    .toggle{width:44px;height:24px;background:#e2e8f0;border-radius:50px;position:relative;cursor:pointer;transition:background 0.2s;border:none;}
+    .toggle.on{background:var(--aqua);}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+    .toggle.on::after{transform:translateX(20px);}
+    .toggle-label{font-size:13px;font-weight:600;color:var(--sea2);}
+
+    /* ── COLOR PICKER ── */
+    .color-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+    .color-swatch{width:36px;height:36px;border-radius:8px;border:2px solid #e2e8f0;cursor:pointer;flex-shrink:0;}
+    .color-name{font-size:12px;font-weight:700;color:var(--sea2);flex:1;}
+    .color-hex{font-size:11px;color:#64748b;font-family:monospace;}
+
+    /* ── MODAL ── */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+    .modal-bg.show{opacity:1;pointer-events:all;}
+    .modal-box{background:white;border-radius:20px;padding:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;transform:scale(0.95);transition:transform 0.3s;}
+    .modal-bg.show .modal-box{transform:scale(1);}
+    .modal-title{font-size:17px;font-weight:700;color:var(--sea2);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;}
+    .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;}
+
+    /* ── SOCIAL ── */
+    .social-row{display:flex;align-items:center;gap:10px;padding:12px;background:#f8fafc;border-radius:12px;margin-bottom:8px;}
+    .social-icon{font-size:22px;width:32px;text-align:center;}
+
+    /* ── TABS ── */
+    .tabs{display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px;margin-bottom:18px;}
+    .tab{flex:1;padding:8px;border-radius:7px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:transparent;color:#64748b;transition:all 0.2s;text-align:center;}
+    .tab.active{background:white;color:var(--sea2);box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .main{margin-left:0;}
+      .topbar{padding:12px 16px;}
+      .content{padding:14px;}
+      .stat-grid{grid-template-columns:1fr 1fr;}
+      .tour-admin-grid{grid-template-columns:1fr;}
+      .booking-row,.table-head-row{grid-template-columns:1fr 1fr 80px;font-size:11px;}
+      .booking-row .booking-tour,.table-head-row .th-tour{display:none;}
+    }
+
+    .toast{position:fixed;bottom:20px;right:20px;background:var(--sea2);color:white;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:500;opacity:0;transition:all 0.3s;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+    .toast.show{opacity:1;}
+  </style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: TOUR EDIT -->
+<div class="modal-bg" id="tourModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modalTourTitle">Edit Tour</span>
+      <button class="modal-close" onclick="closeModal('tourModal')">✕</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchModalTab(0,this)">Basic Info</button>
+      <button class="tab" onclick="switchModalTab(1,this)">Details</button>
+      <button class="tab" onclick="switchModalTab(2,this)">Content</button>
+    </div>
+    <!-- TAB 0 -->
+    <div id="mtab0">
+      <div class="fl"><label class="label">Tour Title</label><input class="fi" id="mt-title" placeholder="Sharm El Sheikh: Tour Name"/></div>
+      <div class="fl"><label class="label">Tagline</label><input class="fi" id="mt-tagline" placeholder="Short description"/></div>
+      <div class="fl" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="label">Category</label>
+          <select class="fi" id="mt-cat">
+            <option value="safari">Safari 🏍️</option>
+            <option value="sea-trips">Sea Trips ⛵</option>
+            <option value="vibes">Vibes ✨</option>
+          </select>
+        </div>
+        <div><label class="label">Status</label>
+          <select class="fi" id="mt-status">
+            <option value="active">✅ Active</option>
+            <option value="inactive">❌ Hidden</option>
+          </select>
+        </div>
+      </div>
+      <div class="fl" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><label class="label">Adult Price ($)</label><input class="fi" id="mt-price" type="number" placeholder="35"/></div>
+        <div><label class="label">Child Price ($)</label><input class="fi" id="mt-childPrice" type="number" placeholder="17.5"/></div>
+        <div><label class="label">Duration</label><input class="fi" id="mt-duration" placeholder="3 Hours"/></div>
+      </div>
+      <div class="fl" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="label">Pickup Time</label><input class="fi" id="mt-pickup" placeholder="8:00 AM / 3:00 PM"/></div>
+        <div><label class="label">Rating (e.g. 4.9)</label><input class="fi" id="mt-rating" type="number" step="0.1" placeholder="4.9"/></div>
+      </div>
+      <div class="fl"><label class="label">Review Count</label><input class="fi" id="mt-reviews" type="number" placeholder="312"/></div>
+      <div class="fl"><label class="label">Image URL</label><input class="fi" id="mt-image" placeholder="https://..."/></div>
+    </div>
+    <!-- TAB 1 -->
+    <div id="mtab1" style="display:none">
+      <div class="fl"><label class="label">Badges (comma separated)</label><input class="fi" id="mt-badges" placeholder="Hotel Pickup, Pay on Arrival, Small Groups"/></div>
+      <div class="fl"><label class="label">Highlights (one per line)</label><textarea class="fi" id="mt-highlights" rows="5" style="resize:none;line-height:1.55" placeholder="Ride through sand dunes&#10;Visit Bedouin village&#10;Watch the sunset"></textarea></div>
+      <div class="fl"><label class="label">What's Included (one per line)</label><textarea class="fi" id="mt-included" rows="4" style="resize:none" placeholder="Hotel pickup&#10;Safety helmet"></textarea></div>
+      <div class="fl"><label class="label">Not Included (one per line)</label><textarea class="fi" id="mt-notincluded" rows="3" style="resize:none" placeholder="Gratuities&#10;Alcoholic drinks"></textarea></div>
+    </div>
+    <!-- TAB 2 -->
+    <div id="mtab2" style="display:none">
+      <div class="fl"><label class="label">Full Description</label><textarea class="fi" id="mt-desc" rows="5" style="resize:none;line-height:1.6"></textarea></div>
+      <div class="fl"><label class="label">Travel Tip</label><textarea class="fi" id="mt-tip" rows="3" style="resize:none;line-height:1.6"></textarea></div>
+      <div class="fl"><label class="label">SEO Title</label><input class="fi" id="mt-seoTitle" placeholder="Tour Name Sharm El Sheikh | From $XX"/></div>
+      <div class="fl"><label class="label">SEO Description</label><textarea class="fi" id="mt-seoDesc" rows="2" style="resize:none"></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button class="btn-primary" style="flex:1" onclick="saveTour()">💾 Save Tour</button>
+      <button class="btn-secondary" onclick="closeModal('tourModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TRANSFER EDIT -->
+<div class="modal-bg" id="transferModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modalTransferTitle">Edit Transfer Route</span>
+      <button class="modal-close" onclick="closeModal('transferModal')">✕</button>
+    </div>
+    <div class="fl"><label class="label">From</label><input class="fi" id="tr-from" placeholder="Sharm El Sheikh Airport"/></div>
+    <div class="fl"><label class="label">To</label><input class="fi" id="tr-to" placeholder="Naama Bay Hotels"/></div>
+    <div class="fl" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="label">Private Car ($)</label><input class="fi" id="tr-private" type="number" placeholder="15"/></div>
+      <div><label class="label">Shared Bus ($/person)</label><input class="fi" id="tr-shared" type="number" placeholder="5"/></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button class="btn-primary" style="flex:1" onclick="saveTransfer()">💾 Save Route</button>
+      <button class="btn-secondary" onclick="closeModal('transferModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BOOKING DETAIL -->
+<div class="modal-bg" id="bookingModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span>Booking Details</span>
+      <button class="modal-close" onclick="closeModal('bookingModal')">✕</button>
+    </div>
+    <div id="bookingDetailContent"></div>
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button class="btn-primary" onclick="markConfirmed()" style="flex:1">✅ Mark Confirmed</button>
+      <button class="btn-danger" onclick="deleteBooking()">🗑️ Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:22px">🐚</span>
+        <div>
+          <div class="logo-name">Sharm Excursions</div>
+          <div class="logo-sub">Admin Dashboard</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <button class="nav-link active" onclick="showPanel('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
+      <button class="nav-link" onclick="showPanel('bookings',this)"><span class="nav-icon">📋</span> Bookings <span id="newBookingCount" style="background:#ef4444;color:white;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;margin-left:auto">0</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Content</div>
+      <button class="nav-link" onclick="showPanel('tours',this)"><span class="nav-icon">🗺️</span> Tours</button>
+      <button class="nav-link" onclick="showPanel('transfers',this)"><span class="nav-icon">🚗</span> Transfers</button>
+      <button class="nav-link" onclick="showPanel('story',this)"><span class="nav-icon">📝</span> Our Story</button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Appearance</div>
+      <button class="nav-link" onclick="showPanel('icons',this)"><span class="nav-icon">🎨</span> Icons & Images</button>
+      <button class="nav-link" onclick="showPanel('colors',this)"><span class="nav-icon">🖌️</span> Colors</button>
+      <button class="nav-link" onclick="showPanel('social',this)"><span class="nav-icon">📱</span> Social Media</button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Settings</div>
+      <button class="nav-link" onclick="showPanel('settings',this)"><span class="nav-icon">⚙️</span> Site Settings</button>
+    </div>
+
+    <div style="padding:14px 18px;margin-top:auto;border-top:1px solid rgba(255,255,255,0.07)">
+      <a href="index.html" target="_blank" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.5);font-size:12px;text-decoration:none">
+        <span>🌐</span> View Live Site
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="toggleSidebar()" style="background:none;border:none;font-size:20px;cursor:pointer;display:none" id="menuToggle">☰</button>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div style="position:relative">
+          <span style="font-size:20px;cursor:pointer" onclick="showPanel('bookings',document.querySelector('.nav-link:nth-child(2)'))">🔔</span>
+          <span class="notif-badge" id="notifBadge" style="position:absolute;top:-6px;right:-6px;display:none">0</span>
+        </div>
+        <a href="index.html" target="_blank" class="view-site-btn">🌐 Live Site</a>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ════════ DASHBOARD ════════ -->
+      <div class="panel active" id="panel-dashboard">
+        <div style="margin-bottom:20px">
+          <h2 style="font-size:22px;color:var(--sea2)">Welcome Back 👋</h2>
+          <p style="color:#64748b;font-size:13px;margin-top:3px">Here's what's happening with Sharm Excursions today.</p>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-val" id="stat-bookings">0</div>
+            <div class="stat-lbl">Total Bookings</div>
+            <div class="stat-trend" style="color:#10b981">↑ All time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-new">0</div>
+            <div class="stat-lbl">New Today</div>
+            <div class="stat-trend" style="color:#3b82f6">↑ Unread</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-revenue">$0</div>
+            <div class="stat-lbl">Expected Revenue</div>
+            <div class="stat-trend" style="color:#10b981">Pay on arrival</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-tours-count">6</div>
+            <div class="stat-lbl">Active Tours</div>
+            <div class="stat-trend" style="color:#64748b">On site</div>
+          </div>
+        </div>
+
+        <!-- RECENT BOOKINGS MINI -->
+        <div class="card-box">
+          <div class="card-box-title">
+            Recent Bookings
+            <button class="btn-sm btn-sm-edit" onclick="showPanel('bookings',null)">View All →</button>
+          </div>
+          <div id="recentBookingsList">
+            <div class="empty-bookings" style="padding:20px">
+              <div style="font-size:32px;margin-bottom:8px">📭</div>
+              <div style="font-size:13px">No bookings yet. They'll appear here when guests book.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="card-box">
+          <div class="card-box-title">Quick Actions</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <button class="btn-primary" onclick="openAddTour()" style="padding:12px">➕ Add New Tour</button>
+            <button class="btn-secondary" onclick="openAddTransfer()" style="padding:12px">➕ Add Transfer Route</button>
+            <button class="btn-secondary" onclick="showPanel('social',null)" style="padding:12px">📱 Edit Social Links</button>
+            <button class="btn-secondary" onclick="showPanel('settings',null)" style="padding:12px">⚙️ Site Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ BOOKINGS ════════ -->
+      <div class="panel" id="panel-bookings">
+        <div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <h2 style="font-size:20px;color:var(--sea2)">All Bookings</h2>
+            <p style="color:#64748b;font-size:12px;margin-top:2px">Customer bookings received via WhatsApp form</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-sm-del" onclick="clearAllBookings()">🗑️ Clear All</button>
+            <button class="btn-sm btn-sm-save" onclick="exportBookings()">📥 Export CSV</button>
+          </div>
+        </div>
+
+        <div class="bookings-wrap">
+          <div class="table-head-row">
+            <div>Guest</div>
+            <div>Hotel</div>
+            <div class="th-tour">Tours</div>
+            <div>Total</div>
+            <div>Status</div>
+          </div>
+          <div id="bookingsList">
+            <div class="empty-bookings">
+              <div style="font-size:40px;margin-bottom:12px">📭</div>
+              <div style="font-size:14px;font-weight:600;color:#475569;margin-bottom:4px">No bookings yet</div>
+              <div style="font-size:12px">When customers complete the booking form, they'll appear here automatically.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ TOURS ════════ -->
+      <div class="panel" id="panel-tours">
+        <div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <h2 style="font-size:20px;color:var(--sea2)">Tours Management</h2>
+            <p style="color:#64748b;font-size:12px;margin-top:2px">Add, edit or remove tours from your site</p>
+          </div>
+          <button class="btn-primary" onclick="openAddTour()">➕ Add New Tour</button>
+        </div>
+
+        <div class="tour-admin-grid" id="toursAdminGrid"></div>
+      </div>
+
+      <!-- ════════ TRANSFERS ════════ -->
+      <div class="panel" id="panel-transfers">
+        <div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <h2 style="font-size:20px;color:var(--sea2)">Transfer Routes</h2>
+            <p style="color:#64748b;font-size:12px;margin-top:2px">Manage all point-to-point transfer prices</p>
+          </div>
+          <button class="btn-primary" onclick="openAddTransfer()">➕ Add Route</button>
+        </div>
+
+        <div id="transfersAdminList"></div>
+      </div>
+
+      <!-- ════════ STORY ════════ -->
+      <div class="panel" id="panel-story">
+        <div style="margin-bottom:18px">
+          <h2 style="font-size:20px;color:var(--sea2)">Our Story</h2>
+          <p style="color:#64748b;font-size:12px;margin-top:2px">Edit the content that appears on the About Us page</p>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Stats (shown at top of About page)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div class="fl"><label class="label">Years Experience</label><input class="fi" id="story-years" value="15+"/></div>
+            <div class="fl"><label class="label">Happy Guests</label><input class="fi" id="story-guests" value="5K+"/></div>
+            <div class="fl"><label class="label">Average Rating</label><input class="fi" id="story-rating" value="4.9★"/></div>
+            <div class="fl"><label class="label">Total Excursions</label><input class="fi" id="story-excursions" value="20+"/></div>
+          </div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Our Story Text</div>
+          <div class="fl"><label class="label">Paragraph 1</label><textarea class="fi" id="story-p1" rows="3" style="resize:none;line-height:1.6">Sharm Excursions was founded in 2010 by Ahmed and his brother Khaled, two Sharm El Sheikh locals who grew up swimming these reefs and riding these deserts. What started as a small boat tour operation has grown into Sharm's most trusted full-service excursion provider.</textarea></div>
+          <div class="fl"><label class="label">Paragraph 2</label><textarea class="fi" id="story-p2" rows="3" style="resize:none;line-height:1.6">Our philosophy has never changed: treat every guest like family. That means honest pricing (no hidden fees — ever), genuine hotel pickup, and guides who actually care about giving you the best day of your holiday.</textarea></div>
+          <div class="fl"><label class="label">Paragraph 3</label><textarea class="fi" id="story-p3" rows="3" style="resize:none;line-height:1.6">We're not a call centre or an online aggregator. When you WhatsApp us, you're talking to someone who lives here — someone who snorkeled Ras Mohammed last Tuesday and rode a quad through the desert last weekend.</textarea></div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Our Values</div>
+          <div id="valuesEditor"></div>
+          <button class="btn-secondary" onclick="addValue()" style="margin-top:10px;width:100%">➕ Add Value</button>
+        </div>
+        <button class="btn-primary" onclick="saveStory()" style="width:100%;padding:13px;margin-top:4px">💾 Save Story</button>
+      </div>
+
+      <!-- ════════ ICONS ════════ -->
+      <div class="panel" id="panel-icons">
+        <div style="margin-bottom:18px">
+          <h2 style="font-size:20px;color:var(--sea2)">Icons & Images</h2>
+          <p style="color:#64748b;font-size:12px;margin-top:2px">Change category icons and upload new images</p>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-title">Category Icons</div>
+          <p style="font-size:12px;color:#64748b;margin-bottom:14px">Click any icon to change it. You can use any emoji or upload an image URL.</p>
+          <div id="catIconsGrid" class="icon-grid"></div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-title">Hero Slideshow Images</div>
+          <p style="font-size:12px;color:#64748b;margin-bottom:14px">URLs of the 4 hero background images (auto-slideshow)</p>
+          <div id="heroImagesEditor"></div>
+          <button class="btn-secondary" onclick="addHeroImage()" style="margin-top:10px;width:100%">➕ Add Image</button>
+          <button class="btn-primary" onclick="saveHeroImages()" style="margin-top:10px;width:100%;padding:12px">💾 Save Hero Images</button>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-title">Trust Strip Numbers</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="fl"><label class="label">Guests Count</label><input class="fi" id="trust-guests" value="727"/></div>
+            <div class="fl"><label class="label">Rating</label><input class="fi" id="trust-rating" value="4.6"/></div>
+            <div class="fl"><label class="label">Stat 3 Label</label><input class="fi" id="trust-3-lbl" value="Free"/></div>
+            <div class="fl"><label class="label">Stat 4 Label</label><input class="fi" id="trust-4-lbl" value="$0"/></div>
+          </div>
+          <button class="btn-primary" onclick="saveTrustStrip()" style="width:100%;padding:12px;margin-top:12px">💾 Save Trust Strip</button>
+        </div>
+      </div>
+
+      <!-- ════════ COLORS ════════ -->
+      <div class="panel" id="panel-colors">
+        <div style="margin-bottom:18px">
+          <h2 style="font-size:20px;color:var(--sea2)">Color Palette</h2>
+          <p style="color:#64748b;font-size:12px;margin-top:2px">All colors update across the entire site when saved</p>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Brand Colors</div>
+          <div id="colorsEditor"></div>
+          <button class="btn-primary" onclick="saveColors()" style="width:100%;padding:13px;margin-top:14px">💾 Apply Colors to Site</button>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Preview</div>
+          <div id="colorPreview" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <!-- ════════ SOCIAL ════════ -->
+      <div class="panel" id="panel-social">
+        <div style="margin-bottom:18px">
+          <h2 style="font-size:20px;color:var(--sea2)">Social Media & Contact</h2>
+          <p style="color:#64748b;font-size:12px;margin-top:2px">These links appear in the footer and contact page</p>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">WhatsApp</div>
+          <div class="fl"><label class="label">WhatsApp Number (with country code)</label>
+            <input class="fi" id="social-wa" value="201223373289" placeholder="201234567890"/>
+            <div style="font-size:11px;color:#64748b;margin-top:4px">Include country code without + (e.g. 201223373289)</div>
+          </div>
+          <div class="fl"><label class="label">Default WhatsApp Message</label>
+            <input class="fi" id="social-wa-msg" value="Hi! I'd like to book an excursion in Sharm El Sheikh"/>
+          </div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Social Media Links</div>
+          <div class="social-row">
+            <span class="social-icon">📸</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:700;margin-bottom:4px">Instagram</div>
+              <input class="fi" id="social-ig" placeholder="https://instagram.com/sharmexcursions"/>
+            </div>
+            <div class="toggle-wrap"><button class="toggle on" id="tog-ig" onclick="this.classList.toggle('on')"></button></div>
+          </div>
+          <div class="social-row">
+            <span class="social-icon">👤</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:700;margin-bottom:4px">Facebook</div>
+              <input class="fi" id="social-fb" placeholder="https://facebook.com/sharmexcursions"/>
+            </div>
+            <div class="toggle-wrap"><button class="toggle on" id="tog-fb" onclick="this.classList.toggle('on')"></button></div>
+          </div>
+          <div class="social-row">
+            <span class="social-icon">🎵</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:700;margin-bottom:4px">TikTok</div>
+              <input class="fi" id="social-tt" placeholder="https://tiktok.com/@sharmexcursions"/>
+            </div>
+            <div class="toggle-wrap"><button class="toggle" id="tog-tt" onclick="this.classList.toggle('on')"></button></div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveSocial()" style="width:100%;padding:13px">💾 Save Social Links</button>
+      </div>
+
+      <!-- ════════ SETTINGS ════════ -->
+      <div class="panel" id="panel-settings">
+        <div style="margin-bottom:18px">
+          <h2 style="font-size:20px;color:var(--sea2)">Site Settings</h2>
+          <p style="color:#64748b;font-size:12px;margin-top:2px">General configuration for your website</p>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">General</div>
+          <div class="fl"><label class="label">Site Name</label><input class="fi" id="set-name" value="Sharm Excursions"/></div>
+          <div class="fl"><label class="label">Tagline (English)</label><input class="fi" id="set-tagline" value="With us, the steps of enjoyment begin"/></div>
+          <div class="fl"><label class="label">Tagline (Italian)</label><input class="fi" id="set-tagline-it" value="Con noi, i passi del divertimento iniziano"/></div>
+          <div class="fl"><label class="label">Location</label><input class="fi" id="set-location" value="Sharm El Sheikh · Egypt · Red Sea"/></div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Hero Trust Strip</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="fl"><label class="label">Guest Count (Hero)</label><input class="fi" id="set-guests" value="727"/></div>
+            <div class="fl"><label class="label">Rating (Hero)</label><input class="fi" id="set-rating" value="4.6"/></div>
+          </div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">SEO</div>
+          <div class="fl"><label class="label">Meta Title (Homepage)</label><input class="fi" id="set-seo-title" value="Sharm Excursions — Discover Sharm El Sheikh, Egypt"/></div>
+          <div class="fl"><label class="label">Meta Description</label><textarea class="fi" id="set-seo-desc" rows="2" style="resize:none">Book the best excursions, safaris, sea trips and transfers in Sharm El Sheikh, Egypt. Hotel pickup included. Pay on arrival. No hidden fees.</textarea></div>
+          <div class="fl"><label class="label">Site URL</label><input class="fi" id="set-url" value="https://sharmexcursions.com"/></div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-title">Admin Login</div>
+          <div class="fl"><label class="label">Admin Password</label>
+            <input class="fi" id="set-password" type="password" placeholder="Enter new password"/>
+            <div style="font-size:11px;color:#94a3b8;margin-top:4px">Leave blank to keep current password</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveSettings()" style="width:100%;padding:13px">💾 Save All Settings</button>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+// ══════════════════════════════════════════════
+//  INITIAL DATA
+// ══════════════════════════════════════════════
+const DEFAULT_TOURS = [
+  {id:"quad-bike-safari",category:"safari",title:"Sharm El Sheikh: Quad Bike Safari Adventure",tagline:"Ride through the golden Sinai desert at sunset",price:35,childPrice:17.5,duration:"3 Hours",pickupTime:"8:00 AM / 3:00 PM",rating:4.9,reviewCount:312,status:"active",image:"https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=80",badges:["Hotel Pickup","Pay on Arrival","Small Groups"],highlights:["Ride a quad bike through dramatic sand dunes","Stop at a Bedouin village for authentic tea","Watch the sun set over the Sinai mountains","Professional guide accompanies the entire trip"],included:["Quad bike rental","Safety helmet & goggles","Hotel pickup & drop-off","Bedouin tea stop"],notIncluded:["Gratuities","Personal travel insurance","Camel ride (optional extra)"],description:"Experience the raw beauty of the Sinai Desert on this thrilling quad bike safari.",tips:"Wear light clothing and closed-toe shoes. Sunscreen is essential.",metaTitle:"Quad Bike Safari Sharm El Sheikh | From $35",metaDesc:"Book the best quad bike safari in Sharm El Sheikh."},
+  {id:"jeep-safari-stars",category:"safari",title:"Sharm El Sheikh: Jeep Safari & Stargazing",tagline:"Desert dunes by day, a billion stars by night",price:45,childPrice:22.5,duration:"6 Hours",pickupTime:"2:00 PM",rating:4.8,reviewCount:198,status:"active",image:"https://images.unsplash.com/photo-1469041797191-50ace28483c3?w=600&q=80",badges:["Hotel Pickup","Dinner Included","Pay on Arrival"],highlights:["4WD jeep convoy through the desert","BBQ dinner under the stars","Astronomy guide with telescope"],included:["4WD jeep transport","BBQ dinner","Hotel transfers"],notIncluded:["Gratuities","Alcoholic drinks"],description:"An unforgettable journey into the heart of the Sinai wilderness.",tips:"Bring a light jacket — desert nights are cool even in summer.",metaTitle:"Jeep Safari & Stargazing Sharm El Sheikh | $45",metaDesc:"Join the Jeep Safari & Stargazing tour in Sharm."},
+  {id:"snorkeling-ras-mohammed",category:"sea-trips",title:"Sharm El Sheikh: Ras Mohammed Snorkeling",tagline:"Dive into Egypt's most spectacular coral reefs",price:40,childPrice:20,duration:"7 Hours",pickupTime:"7:30 AM",rating:5.0,reviewCount:521,status:"active",image:"https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80",badges:["Hotel Pickup","Lunch on Board","Gear Included"],highlights:["Snorkel at Ras Mohammed National Park","Three snorkeling spots","Lunch and soft drinks on board"],included:["Boat trip","Snorkeling equipment","Lunch & soft drinks"],notIncluded:["Alcoholic beverages","Gratuities"],description:"Ras Mohammed National Park — one of the world's top snorkeling destinations.",tips:"Use reef-safe sunscreen only.",metaTitle:"Ras Mohammed Snorkeling Trip | $40 | Sharm",metaDesc:"Best snorkeling in Sharm El Sheikh at Ras Mohammed."},
+  {id:"sunset-boat-party",category:"sea-trips",title:"Sharm El Sheikh: Sunset Boat Party",tagline:"Dance, swim, and toast to the Red Sea sunset",price:30,childPrice:15,duration:"4 Hours",pickupTime:"3:00 PM",rating:4.7,reviewCount:445,status:"active",image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",badges:["Hotel Pickup","DJ on Board","Pay on Arrival"],highlights:["Cruise along the Sharm coastline","Live DJ and dance floor","Swimming stop at coral reef"],included:["Boat cruise","DJ entertainment","Soft drinks"],notIncluded:["Alcoholic drinks (for purchase)"],description:"The most vibrant evening on the Red Sea.",tips:"Bring a light change of clothes after swimming.",metaTitle:"Sunset Boat Party Sharm El Sheikh | $30",metaDesc:"Join the Sunset Boat Party in Sharm El Sheikh."},
+  {id:"beach-club-vip",category:"vibes",title:"Sharm El Sheikh: Beach Club VIP Day",tagline:"Luxury sunbeds, private pools, and ocean views",price:55,childPrice:27.5,duration:"Full Day",pickupTime:"9:00 AM",rating:4.9,reviewCount:267,status:"active",image:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=80",badges:["Hotel Pickup","Lunch Included","Infinity Pool"],highlights:["Private beach access all day","VIP sunbed & umbrella","Buffet lunch"],included:["VIP beach access","Sunbed & umbrella","Buffet lunch"],notIncluded:["Alcoholic drinks","Water sports"],description:"Escape to Sharm's most exclusive beach club for a day of pure luxury.",tips:"Book early — VIP spots are limited to 20 guests per day.",metaTitle:"Beach Club VIP Day Sharm El Sheikh | $55",metaDesc:"Spend a VIP day at Sharm's best beach club."},
+  {id:"parasailing",category:"vibes",title:"Sharm El Sheikh: Parasailing over the Red Sea",tagline:"Soar 150m above the crystal-clear Red Sea",price:40,childPrice:20,duration:"1.5 Hours",pickupTime:"Flexible",rating:4.8,reviewCount:189,status:"active",image:"https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600&q=80",badges:["Hotel Pickup","Safety Certified","Pay on Arrival"],highlights:["Fly 150m above the Red Sea","Aerial views of Sinai & Saudi Arabia","Safety certified equipment"],included:["Parasail flight","Safety harness","Hotel transfers"],notIncluded:["Photos package (optional $15)"],description:"The most exhilarating 15 minutes of your life above the Red Sea.",tips:"Min weight 40kg. Not for those with heart conditions.",metaTitle:"Parasailing Sharm El Sheikh | $40",metaDesc:"Fly 150m above the Red Sea in Sharm."},
+];
+
+const DEFAULT_TRANSFERS = [
+  {id:"t1",from:"Sharm El Sheikh Airport",to:"Naama Bay Hotels",privateCar:15,sharedBus:5},
+  {id:"t2",from:"Sharm El Sheikh Airport",to:"Sharks Bay / Coral Bay",privateCar:20,sharedBus:7},
+  {id:"t3",from:"Sharm El Sheikh Airport",to:"Ras Nasrani / Marriott Area",privateCar:25,sharedBus:8},
+  {id:"t4",from:"Naama Bay",to:"Old Market (Sharm El Qadeem)",privateCar:12,sharedBus:4},
+  {id:"t5",from:"Naama Bay",to:"Soho Square",privateCar:10,sharedBus:4},
+  {id:"t6",from:"Any Hotel",to:"Dahab (Day Trip Transfer)",privateCar:70,sharedBus:20},
+  {id:"t7",from:"Any Hotel",to:"St. Catherine Monastery",privateCar:80,sharedBus:25},
+];
+
+const DEFAULT_COLORS = [
+  {key:'--sea',name:'Deep Navy (Primary)',hex:'#051e34'},
+  {key:'--sea2',name:'Navy (Secondary)',hex:'#0a2d4a'},
+  {key:'--aqua',name:'Aqua Blue',hex:'#0891b2'},
+  {key:'--teal',name:'Teal',hex:'#0e7490'},
+  {key:'--gold',name:'Gold (Dark)',hex:'#b8860b'},
+  {key:'--gold-bright',name:'Gold (Bright / CTAs)',hex:'#e6b822'},
+];
+
+const DEFAULT_CAT_ICONS = [
+  {id:'safari',label:'Safari',icon:'🏍️',color:'linear-gradient(135deg,#78350f,#d97706)'},
+  {id:'sea-trips',label:'Sea Trips',icon:'⛵',color:'linear-gradient(135deg,#075985,#0891b2)'},
+  {id:'transfers',label:'Transfers',icon:'🚗',color:'linear-gradient(135deg,#064e3b,#059669)'},
+  {id:'vibes',label:'Vibes',icon:'✨',color:'linear-gradient(135deg,#4c1d95,#7c3aed)'},
+];
+
+const DEFAULT_HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=85',
+  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=85',
+  'https://images.unsplash.com/photo-1469041797191-50ace28483c3?w=800&q=85',
+  'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=85',
+];
+
+// ══════════════════════════════════════════════
+//  STORAGE HELPERS
+// ══════════════════════════════════════════════
+function getLS(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e){ return def; }
+}
+function setLS(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+let tours      = getLS('admin_tours', DEFAULT_TOURS);
+let transfers  = getLS('admin_transfers', DEFAULT_TRANSFERS);
+let bookings   = getLS('admin_bookings', []);
+let colors     = getLS('admin_colors', DEFAULT_COLORS);
+let catIcons   = getLS('admin_caticons', DEFAULT_CAT_ICONS);
+let heroImages = getLS('admin_heroimages', DEFAULT_HERO_IMAGES);
+let socialData = getLS('admin_social', {wa:'201223373289',waMsg:"Hi! I'd like to book an excursion in Sharm El Sheikh",ig:'',fb:'',tt:''});
+
+let editingTourId    = null;
+let editingTransferId = null;
+let viewingBookingRef = null;
+
+// ── CHECK FOR NEW BOOKINGS FROM MAIN SITE ──
+function syncBookings() {
+  const siteBookings = getLS('site_bookings', []);
+  if (siteBookings.length > 0) {
+    siteBookings.forEach(b => {
+      if (!bookings.find(x => x.ref === b.ref)) bookings.push(b);
+    });
+    setLS('admin_bookings', bookings);
+    localStorage.removeItem('site_bookings');
+    updateNotifBadge();
+    renderBookings();
+    updateDashStats();
+  }
+}
+
+function updateNotifBadge() {
+  const newOnes = bookings.filter(b => b.status === 'new').length;
+  ['notifBadge','newBookingCount'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = newOnes > 0 ? 'flex' : 'none';
+    el.textContent = newOnes;
+  });
+}
+
+// ══════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════
+const PANEL_TITLES = {
+  dashboard:'Dashboard', bookings:'All Bookings',
+  tours:'Tours Management', transfers:'Transfer Routes',
+  story:'Our Story', icons:'Icons & Images',
+  colors:'Color Palette', social:'Social Media',
+  settings:'Site Settings'
+};
+
+function showPanel(id, triggerEl) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+id)?.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (triggerEl) triggerEl.classList.add('active');
+  document.getElementById('topbarTitle').textContent = PANEL_TITLES[id] || id;
+  // refresh panel content
+  if (id==='tours') renderToursAdmin();
+  if (id==='transfers') renderTransfersAdmin();
+  if (id==='bookings') { renderBookings(); markBookingsRead(); }
+  if (id==='icons') renderIconsPanel();
+  if (id==='colors') renderColorsPanel();
+  if (id==='social') populateSocialPanel();
+  if (id==='dashboard') updateDashStats();
+  if (id==='story') renderValuesEditor();
+  // close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#dc2626' : '#051e34';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function switchModalTab(idx, el) {
+  [0,1,2].forEach(i => {
+    document.getElementById('mtab'+i).style.display = i === idx ? 'block' : 'none';
+  });
+  document.querySelectorAll('#tourModal .tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════
+function updateDashStats() {
+  const newOnes = bookings.filter(b => b.status === 'new').length;
+  const totalRev = bookings.reduce((s,b) => s + (b.total || 0), 0);
+  document.getElementById('stat-bookings').textContent = bookings.length;
+  document.getElementById('stat-new').textContent = newOnes;
+  document.getElementById('stat-revenue').textContent = '$' + totalRev.toFixed(0);
+  document.getElementById('stat-tours-count').textContent = tours.filter(t => t.status === 'active').length;
+  renderRecentBookings();
+}
+
+function renderRecentBookings() {
+  const el = document.getElementById('recentBookingsList');
+  if (bookings.length === 0) {
+    el.innerHTML = `<div class="empty-bookings" style="padding:20px"><div style="font-size:28px;margin-bottom:6px">📭</div><div style="font-size:12px">No bookings yet.</div></div>`;
+    return;
+  }
+  el.innerHTML = bookings.slice(-4).reverse().map(b => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f8fafc;cursor:pointer" onclick="openBookingDetail('${b.ref}')">
+      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#051e34);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0">${(b.name||'?')[0].toUpperCase()}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:#0a2d4a">${b.name || 'Unknown'}</div>
+        <div style="font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(b.tours||[]).length} tour(s) · ${b.hotel || '—'}</div>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:13px;color:#0a2d4a">$${(b.total||0).toFixed(0)}</div>
+        <span class="status-pill ${b.status==='confirmed'?'status-confirmed':b.status==='new'?'status-new':'status-pending'}">${b.status||'new'}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  BOOKINGS
+// ══════════════════════════════════════════════
+function renderBookings() {
+  const el = document.getElementById('bookingsList');
+  if (bookings.length === 0) {
+    el.innerHTML = `<div class="empty-bookings"><div style="font-size:40px;margin-bottom:12px">📭</div><div style="font-size:14px;font-weight:600;color:#475569;margin-bottom:4px">No bookings yet</div><div style="font-size:12px">When customers complete the booking form, they'll appear here automatically.</div></div>`;
+    return;
+  }
+  el.innerHTML = [...bookings].reverse().map(b => `
+    <div class="booking-row" style="cursor:pointer" onclick="openBookingDetail('${b.ref}')">
+      <div><div class="booking-name">${b.name || '—'}</div><div style="font-size:11px;color:#94a3b8">${b.ref || ''}</div></div>
+      <div><div style="font-size:12px;font-weight:600;color:#475569">${b.hotel || '—'}</div><div style="font-size:11px;color:#94a3b8">${b.phone || ''}</div></div>
+      <div class="booking-tour">${(b.tours||[]).length} tour(s)</div>
+      <div class="booking-total">$${(b.total||0).toFixed(0)}</div>
+      <div><span class="status-pill ${b.status==='confirmed'?'status-confirmed':b.status==='new'?'status-new':'status-pending'}">${b.status||'new'}</span></div>
+    </div>`).join('');
+}
+
+function openBookingDetail(ref) {
+  const b = bookings.find(x => x.ref === ref);
+  if (!b) return;
+  viewingBookingRef = ref;
+  const el = document.getElementById('bookingDetailContent');
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="padding:10px;background:#f8fafc;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">Reference</div><div style="font-size:14px;font-weight:800;color:#051e34">${b.ref}</div></div>
+      <div style="padding:10px;background:#f8fafc;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">Status</div><span class="status-pill ${b.status==='confirmed'?'status-confirmed':'status-new'}">${b.status||'new'}</span></div>
+      <div style="padding:10px;background:#f8fafc;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">Guest Name</div><div style="font-size:13px;font-weight:700;color:#051e34">${b.name||'—'}</div></div>
+      <div style="padding:10px;background:#f8fafc;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">Hotel</div><div style="font-size:13px;font-weight:700;color:#051e34">${b.hotel||'—'}</div></div>
+      <div style="padding:10px;background:#f8fafc;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">WhatsApp</div><div style="font-size:13px;font-weight:700;color:#051e34">${b.phone||'—'}</div></div>
+      <div style="padding:10px;background:#f8fafc;border-radius:10px"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">Passengers</div><div style="font-size:12px;color:#051e34">${b.adults||0} adults · ${b.children||0} children · ${b.infants||0} infants</div></div>
+    </div>
+    <div style="background:#f0f9ff;border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:#0891b2;text-transform:uppercase;margin-bottom:8px">Tours Booked</div>
+      ${(b.tours||[]).map(t => `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e0f2fe;font-size:12px"><span style="color:#0a2d4a;font-weight:600">${t.title||t}</span><span style="font-weight:700;color:#0a2d4a">$${(t.subtotal||0).toFixed(0)}</span></div>`).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#051e34,#0a2d4a);padding:14px;border-radius:12px">
+      <div style="color:rgba(255,255,255,0.7);font-size:12px;font-weight:700">TOTAL DUE ON ARRIVAL</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#e6b822">$${(b.total||0).toFixed(2)}</div>
+    </div>
+    ${b.special ? `<div style="margin-top:10px;padding:10px;background:#fef3c7;border-radius:10px;font-size:12px;color:#92400e"><strong>Special Requests:</strong> ${b.special}</div>` : ''}
+    <div style="margin-top:10px">
+      <a href="https://wa.me/${(b.phone||'').replace(/[^0-9]/g,'')}" target="_blank" style="display:block;text-align:center;background:#25d366;color:white;padding:11px;border-radius:10px;font-weight:700;font-size:13px;text-decoration:none">💬 Reply on WhatsApp</a>
+    </div>`;
+  openModal('bookingModal');
+}
+
+function markConfirmed() {
+  const idx = bookings.findIndex(b => b.ref === viewingBookingRef);
+  if (idx > -1) { bookings[idx].status = 'confirmed'; setLS('admin_bookings', bookings); }
+  closeModal('bookingModal');
+  renderBookings(); updateDashStats(); updateNotifBadge();
+  toast('Booking marked as confirmed ✅');
+}
+
+function deleteBooking() {
+  if (!confirm('Delete this booking?')) return;
+  bookings = bookings.filter(b => b.ref !== viewingBookingRef);
+  setLS('admin_bookings', bookings);
+  closeModal('bookingModal');
+  renderBookings(); updateDashStats(); updateNotifBadge();
+  toast('Booking deleted 🗑️');
+}
+
+function markBookingsRead() {
+  let changed = false;
+  bookings.forEach(b => { if (b.status === 'new') { b.status = 'pending'; changed = true; } });
+  if (changed) { setLS('admin_bookings', bookings); updateNotifBadge(); }
+}
+
+function clearAllBookings() {
+  if (!confirm('Clear ALL bookings? This cannot be undone.')) return;
+  bookings = []; setLS('admin_bookings', bookings);
+  renderBookings(); updateDashStats(); updateNotifBadge();
+  toast('All bookings cleared');
+}
+
+function exportBookings() {
+  if (bookings.length === 0) { toast('No bookings to export', 'error'); return; }
+  const rows = [['Ref','Name','Hotel','Phone','Tours','Adults','Children','Infants','Total','Status','Date']];
+  bookings.forEach(b => rows.push([b.ref,b.name,b.hotel,b.phone,(b.tours||[]).length,b.adults,b.children,b.infants,(b.total||0).toFixed(2),b.status,b.date||'']));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'bookings_sharm_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+  toast('CSV downloaded 📥');
+}
+
+// ══════════════════════════════════════════════
+//  TOURS
+// ══════════════════════════════════════════════
+function renderToursAdmin() {
+  const grid = document.getElementById('toursAdminGrid');
+  grid.innerHTML = tours.map(t => `
+    <div class="tour-admin-card">
+      <img src="${t.image}" alt="${t.title}" class="tac-img" loading="lazy"/>
+      <div class="tac-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px">
+          <div class="tac-title">${t.title.replace('Sharm El Sheikh: ','')}</div>
+          <span class="tac-badge ${t.status==='active'?'tac-active':'tac-inactive'}">${t.status==='active'?'Live':'Hidden'}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <span class="tac-price">$${t.price}</span>
+          <span style="font-size:11px;color:#64748b">·</span>
+          <span style="font-size:11px;color:#64748b">${t.duration}</span>
+          <span style="font-size:11px;color:#f59e0b">★ ${t.rating}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">${(t.badges||[]).map(b=>`<span class="tac-badge">${b}</span>`).join('')}</div>
+        <div class="tac-actions">
+          <button class="btn-sm btn-sm-edit" onclick="openEditTour('${t.id}')">✏️ Edit</button>
+          <button class="btn-sm ${t.status==='active'?'btn-sm-del':'btn-sm-save'}" onclick="toggleTourStatus('${t.id}')">${t.status==='active'?'🙈 Hide':'👁️ Show'}</button>
+          <button class="btn-sm btn-sm-del" onclick="deleteTour('${t.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openAddTour() {
+  editingTourId = null;
+  document.getElementById('modalTourTitle').textContent = 'Add New Tour';
+  ['mt-title','mt-tagline','mt-badges','mt-highlights','mt-included','mt-notincluded','mt-desc','mt-tip','mt-seoTitle','mt-seoDesc','mt-image','mt-pickup','mt-duration'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['mt-price','mt-childPrice','mt-rating','mt-reviews'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('mt-cat').value='safari';
+  document.getElementById('mt-status').value='active';
+  switchModalTab(0, document.querySelector('#tourModal .tab'));
+  openModal('tourModal');
+}
+
+function openEditTour(id) {
+  const t = tours.find(x => x.id === id);
+  if (!t) return;
+  editingTourId = id;
+  document.getElementById('modalTourTitle').textContent = 'Edit Tour';
+  document.getElementById('mt-title').value = t.title;
+  document.getElementById('mt-tagline').value = t.tagline || '';
+  document.getElementById('mt-cat').value = t.category;
+  document.getElementById('mt-status').value = t.status || 'active';
+  document.getElementById('mt-price').value = t.price;
+  document.getElementById('mt-childPrice').value = t.childPrice;
+  document.getElementById('mt-duration').value = t.duration;
+  document.getElementById('mt-pickup').value = t.pickupTime;
+  document.getElementById('mt-rating').value = t.rating;
+  document.getElementById('mt-reviews').value = t.reviewCount;
+  document.getElementById('mt-image').value = t.image;
+  document.getElementById('mt-badges').value = (t.badges||[]).join(', ');
+  document.getElementById('mt-highlights').value = (t.highlights||[]).join('\n');
+  document.getElementById('mt-included').value = (t.included||[]).join('\n');
+  document.getElementById('mt-notincluded').value = (t.notIncluded||[]).join('\n');
+  document.getElementById('mt-desc').value = t.description || '';
+  document.getElementById('mt-tip').value = t.tips || '';
+  document.getElementById('mt-seoTitle').value = t.metaTitle || '';
+  document.getElementById('mt-seoDesc').value = t.metaDesc || '';
+  switchModalTab(0, document.querySelector('#tourModal .tab'));
+  openModal('tourModal');
+}
+
+function saveTour() {
+  const title = document.getElementById('mt-title').value.trim();
+  if (!title) { toast('Tour title is required', 'error'); return; }
+  const id = editingTourId || title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  const tourData = {
+    id, title,
+    tagline: document.getElementById('mt-tagline').value.trim(),
+    category: document.getElementById('mt-cat').value,
+    status: document.getElementById('mt-status').value,
+    price: parseFloat(document.getElementById('mt-price').value) || 0,
+    childPrice: parseFloat(document.getElementById('mt-childPrice').value) || 0,
+    duration: document.getElementById('mt-duration').value.trim(),
+    pickupTime: document.getElementById('mt-pickup').value.trim(),
+    rating: parseFloat(document.getElementById('mt-rating').value) || 4.9,
+    reviewCount: parseInt(document.getElementById('mt-reviews').value) || 0,
+    image: document.getElementById('mt-image').value.trim(),
+    badges: document.getElementById('mt-badges').value.split(',').map(s=>s.trim()).filter(Boolean),
+    highlights: document.getElementById('mt-highlights').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    included: document.getElementById('mt-included').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    notIncluded: document.getElementById('mt-notincluded').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    description: document.getElementById('mt-desc').value.trim(),
+    tips: document.getElementById('mt-tip').value.trim(),
+    metaTitle: document.getElementById('mt-seoTitle').value.trim(),
+    metaDesc: document.getElementById('mt-seoDesc').value.trim(),
+  };
+  if (editingTourId) {
+    const idx = tours.findIndex(t => t.id === editingTourId);
+    if (idx > -1) tours[idx] = tourData;
+  } else {
+    tours.push(tourData);
+  }
+  setLS('admin_tours', tours);
+  closeModal('tourModal');
+  renderToursAdmin();
+  toast(editingTourId ? 'Tour updated ✅' : 'Tour added ✅');
+}
+
+function toggleTourStatus(id) {
+  const t = tours.find(x => x.id === id);
+  if (t) { t.status = t.status === 'active' ? 'inactive' : 'active'; setLS('admin_tours', tours); renderToursAdmin(); toast(`Tour ${t.status === 'active' ? 'live' : 'hidden'}`); }
+}
+
+function deleteTour(id) {
+  if (!confirm('Delete this tour?')) return;
+  tours = tours.filter(t => t.id !== id);
+  setLS('admin_tours', tours);
+  renderToursAdmin();
+  toast('Tour deleted 🗑️');
+}
+
+// ══════════════════════════════════════════════
+//  TRANSFERS
+// ══════════════════════════════════════════════
+function renderTransfersAdmin() {
+  const el = document.getElementById('transfersAdminList');
+  el.innerHTML = transfers.map(tr => `
+    <div style="background:white;border-radius:14px;border:1px solid #e8edf2;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div style="font-size:13px;font-weight:700;color:#051e34">${tr.from}</div>
+            <span style="color:#0891b2;font-size:16px">→</span>
+            <div style="font-size:13px;font-weight:700;color:#051e34">${tr.to}</div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+            <span style="padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;background:linear-gradient(135deg,rgba(184,134,11,0.12),rgba(230,184,34,0.12));color:#b8860b;border:1px solid rgba(184,134,11,0.2)">🚘 Private: $${tr.privateCar}/vehicle</span>
+            <span style="padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;background:linear-gradient(135deg,rgba(8,145,178,0.1),rgba(14,116,144,0.1));color:#0891b2;border:1px solid rgba(8,145,178,0.2)">🚌 Shared: $${tr.sharedBus}/person</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn-sm btn-sm-edit" onclick="openEditTransfer('${tr.id}')">✏️ Edit</button>
+          <button class="btn-sm btn-sm-del" onclick="deleteTransfer('${tr.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openAddTransfer() {
+  editingTransferId = null;
+  document.getElementById('modalTransferTitle').textContent = 'Add Transfer Route';
+  ['tr-from','tr-to'].forEach(id => document.getElementById(id).value = '');
+  ['tr-private','tr-shared'].forEach(id => document.getElementById(id).value = '');
+  openModal('transferModal');
+}
+
+function openEditTransfer(id) {
+  const tr = transfers.find(x => x.id === id);
+  if (!tr) return;
+  editingTransferId = id;
+  document.getElementById('modalTransferTitle').textContent = 'Edit Transfer Route';
+  document.getElementById('tr-from').value = tr.from;
+  document.getElementById('tr-to').value = tr.to;
+  document.getElementById('tr-private').value = tr.privateCar;
+  document.getElementById('tr-shared').value = tr.sharedBus;
+  openModal('transferModal');
+}
+
+function saveTransfer() {
+  const from = document.getElementById('tr-from').value.trim();
+  const to = document.getElementById('tr-to').value.trim();
+  if (!from || !to) { toast('From and To are required', 'error'); return; }
+  const id = editingTransferId || 'tr' + Date.now();
+  const data = { id, from, to, privateCar: parseFloat(document.getElementById('tr-private').value)||0, sharedBus: parseFloat(document.getElementById('tr-shared').value)||0 };
+  if (editingTransferId) {
+    const idx = transfers.findIndex(t => t.id === editingTransferId);
+    if (idx > -1) transfers[idx] = data;
+  } else {
+    transfers.push(data);
+  }
+  setLS('admin_transfers', transfers);
+  closeModal('transferModal');
+  renderTransfersAdmin();
+  toast('Transfer route saved ✅');
+}
+
+function deleteTransfer(id) {
+  if (!confirm('Delete this route?')) return;
+  transfers = transfers.filter(t => t.id !== id);
+  setLS('admin_transfers', transfers);
+  renderTransfersAdmin();
+  toast('Route deleted 🗑️');
+}
+
+// ══════════════════════════════════════════════
+//  STORY / VALUES
+// ══════════════════════════════════════════════
+let values = getLS('admin_values', [
+  {icon:'🚫',title:'Zero Hidden Fees',desc:'The price you see is exactly what you pay.'},
+  {icon:'💳',title:'Pay on Arrival',desc:'Reserve free, pay cash on the day.'},
+  {icon:'🏨',title:'Free Hotel Pickup',desc:'We come to you — included on every tour.'},
+  {icon:'🌿',title:'Respect for Nature',desc:'Reef-safe sunscreen mandatory. Zero-harm policy.'},
+  {icon:'🤝',title:'Community First',desc:'100% local guides, captains and drivers.'},
+]);
+
+function renderValuesEditor() {
+  const el = document.getElementById('valuesEditor');
+  el.innerHTML = values.map((v,i) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:#f8fafc;padding:10px;border-radius:10px">
+      <input class="fi" value="${v.icon}" style="width:50px;text-align:center;font-size:20px;padding:6px" onchange="updateValue(${i},'icon',this.value)"/>
+      <input class="fi" value="${v.title}" style="flex:1" placeholder="Value title" onchange="updateValue(${i},'title',this.value)"/>
+      <button class="btn-sm btn-sm-del" onclick="removeValue(${i})">✕</button>
+    </div>
+    <input class="fi" value="${v.desc}" placeholder="Description" style="margin-bottom:8px" onchange="updateValue(${i},'desc',this.value)"/>`).join('');
+}
+
+function updateValue(i,key,val) { values[i][key]=val; }
+function removeValue(i) { values.splice(i,1); renderValuesEditor(); }
+function addValue() { values.push({icon:'⭐',title:'New Value',desc:'Description here'}); renderValuesEditor(); }
+function saveStory() {
+  setLS('admin_values', values);
+  setLS('admin_story_stats', {
+    years: document.getElementById('story-years').value,
+    guests: document.getElementById('story-guests').value,
+    rating: document.getElementById('story-rating').value,
+    excursions: document.getElementById('story-excursions').value,
+  });
+  setLS('admin_story_text', {
+    p1: document.getElementById('story-p1').value,
+    p2: document.getElementById('story-p2').value,
+    p3: document.getElementById('story-p3').value,
+  });
+  toast('Story saved ✅');
+}
+
+// ══════════════════════════════════════════════
+//  ICONS
+// ══════════════════════════════════════════════
+function renderIconsPanel() {
+  const grid = document.getElementById('catIconsGrid');
+  grid.innerHTML = catIcons.map((c,i) => `
+    <div class="icon-item" onclick="editCatIcon(${i})">
+      <div class="icon-display">${c.icon}</div>
+      <div class="icon-label">${c.label}</div>
+      <div style="font-size:9px;color:#94a3b8;margin-top:2px">Click to change</div>
+    </div>`).join('');
+
+  const heroEl = document.getElementById('heroImagesEditor');
+  heroEl.innerHTML = heroImages.map((url,i) => `
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <div style="width:48px;height:36px;border-radius:6px;overflow:hidden;flex-shrink:0"><img src="${url}" style="width:100%;height:100%;object-fit:cover"/></div>
+      <input class="fi" value="${url}" id="heroImg-${i}" style="flex:1" placeholder="https://..."/>
+      <button class="btn-sm btn-sm-del" onclick="removeHeroImage(${i})">✕</button>
+    </div>`).join('');
+
+  document.getElementById('trust-guests').value = getLS('admin_trust',{guests:'727',rating:'4.6'}).guests;
+  document.getElementById('trust-rating').value = getLS('admin_trust',{guests:'727',rating:'4.6'}).rating;
+}
+
+function editCatIcon(i) {
+  const newIcon = prompt(`Enter new emoji or icon for "${catIcons[i].label}":`, catIcons[i].icon);
+  if (newIcon) { catIcons[i].icon = newIcon; setLS('admin_caticons', catIcons); renderIconsPanel(); toast('Icon updated ✅'); }
+}
+
+function addHeroImage() {
+  const url = prompt('Enter image URL:');
+  if (url) { heroImages.push(url); renderIconsPanel(); }
+}
+
+function removeHeroImage(i) {
+  heroImages.splice(i, 1); renderIconsPanel();
+}
+
+function saveHeroImages() {
+  heroImages = [];
+  let i = 0;
+  while (document.getElementById('heroImg-'+i)) {
+    const val = document.getElementById('heroImg-'+i).value.trim();
+    if (val) heroImages.push(val);
+    i++;
+  }
+  setLS('admin_heroimages', heroImages);
+  toast('Hero images saved ✅');
+}
+
+function saveTrustStrip() {
+  setLS('admin_trust', {
+    guests: document.getElementById('trust-guests').value,
+    rating: document.getElementById('trust-rating').value,
+    lbl3: document.getElementById('trust-3-lbl').value,
+    lbl4: document.getElementById('trust-4-lbl').value,
+  });
+  toast('Trust strip saved ✅');
+}
+
+// ══════════════════════════════════════════════
+//  COLORS
+// ══════════════════════════════════════════════
+function renderColorsPanel() {
+  const el = document.getElementById('colorsEditor');
+  const preview = document.getElementById('colorPreview');
+  el.innerHTML = colors.map((c,i) => `
+    <div class="color-row">
+      <input type="color" class="color-swatch" value="${c.hex}" onchange="updateColor(${i},this.value)" style="background:${c.hex}"/>
+      <div style="flex:1"><div class="color-name">${c.name}</div><div class="color-hex">${c.key}</div></div>
+      <input class="fi" value="${c.hex}" style="width:90px;font-family:monospace;font-size:12px" onchange="updateColor(${i},this.value)"/>
+    </div>`).join('');
+  preview.innerHTML = colors.map(c => `<div style="width:50px;height:50px;border-radius:10px;background:${c.hex};box-shadow:0 2px 8px rgba(0,0,0,0.15)" title="${c.name}"></div>`).join('');
+}
+
+function updateColor(i, val) {
+  colors[i].hex = val;
+  document.querySelectorAll('#colorsEditor .color-swatch')[i].style.background = val;
+  document.querySelectorAll('#colorsEditor .fi')[i] && (document.querySelectorAll('#colorsEditor .fi')[i].value = val);
+  renderColorsPanel();
+}
+
+function saveColors() {
+  setLS('admin_colors', colors);
+  // Apply to root CSS
+  const root = document.documentElement;
+  colors.forEach(c => root.style.setProperty(c.key, c.hex));
+  toast('Colors applied ✅ — Refresh site to see changes');
+}
+
+// ══════════════════════════════════════════════
+//  SOCIAL
+// ══════════════════════════════════════════════
+function populateSocialPanel() {
+  document.getElementById('social-wa').value = socialData.wa || '201223373289';
+  document.getElementById('social-wa-msg').value = socialData.waMsg || '';
+  document.getElementById('social-ig').value = socialData.ig || '';
+  document.getElementById('social-fb').value = socialData.fb || '';
+  document.getElementById('social-tt').value = socialData.tt || '';
+}
+
+function saveSocial() {
+  socialData = {
+    wa: document.getElementById('social-wa').value.trim(),
+    waMsg: document.getElementById('social-wa-msg').value.trim(),
+    ig: document.getElementById('social-ig').value.trim(),
+    fb: document.getElementById('social-fb').value.trim(),
+    tt: document.getElementById('social-tt').value.trim(),
+    ig_on: document.getElementById('tog-ig').classList.contains('on'),
+    fb_on: document.getElementById('tog-fb').classList.contains('on'),
+    tt_on: document.getElementById('tog-tt').classList.contains('on'),
+  };
+  setLS('admin_social', socialData);
+  toast('Social links saved ✅');
+}
+
+// ══════════════════════════════════════════════
+//  SETTINGS
+// ══════════════════════════════════════════════
+function saveSettings() {
+  const settings = {
+    name: document.getElementById('set-name').value,
+    tagline: document.getElementById('set-tagline').value,
+    taglineIt: document.getElementById('set-tagline-it').value,
+    location: document.getElementById('set-location').value,
+    guests: document.getElementById('set-guests').value,
+    rating: document.getElementById('set-rating').value,
+    seoTitle: document.getElementById('set-seo-title').value,
+    seoDesc: document.getElementById('set-seo-desc').value,
+    url: document.getElementById('set-url').value,
+  };
+  setLS('admin_settings', settings);
+  const pwd = document.getElementById('set-password').value;
+  if (pwd) setLS('admin_pwd', btoa(pwd));
+  toast('Settings saved ✅');
+}
+
+// ══════════════════════════════════════════════
+//  MOBILE SIDEBAR TOGGLE
+// ══════════════════════════════════════════════
+if (window.innerWidth < 768) {
+  document.getElementById('menuToggle').style.display = 'block';
+}
+window.addEventListener('resize', () => {
+  document.getElementById('menuToggle').style.display = window.innerWidth < 768 ? 'block' : 'none';
+  if (window.innerWidth >= 768) document.getElementById('sidebar').classList.remove('open');
+});
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+syncBookings();
+updateDashStats();
+updateNotifBadge();
+setInterval(syncBookings, 10000); // poll every 10s
+
+// Apply saved colors
+colors.forEach(c => document.documentElement.style.setProperty(c.key, c.hex));
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- CORE PAGES -->
+  <url>
+    <loc>https://sharmexcursions.com/</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200</image:loc>
+      <image:title>Sharm El Sheikh Red Sea Excursions</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/about</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/contact</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- CATEGORY PAGES -->
+  <url>
+    <loc>https://sharmexcursions.com/category?cat=safari</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1469041797191-50ace28483c3?w=1200</image:loc>
+      <image:title>Safari Tours Sharm El Sheikh</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/category?cat=sea-trips</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200</image:loc>
+      <image:title>Sea Trips Sharm El Sheikh Red Sea</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/category?cat=vibes</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/transfers</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- TOUR DETAIL PAGES -->
+  <url>
+    <loc>https://sharmexcursions.com/tour?id=quad-bike-safari</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200</image:loc>
+      <image:title>Quad Bike Safari Sharm El Sheikh</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/tour?id=jeep-safari-stars</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/tour?id=snorkeling-ras-mohammed</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200</image:loc>
+      <image:title>Ras Mohammed Snorkeling Trip Sharm El Sheikh</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/tour?id=sunset-boat-party</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/tour?id=beach-club-vip</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/tour?id=parasailing</loc>
+    <lastmod>2025-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- BLOG PAGES -->
+  <url>
+    <loc>https://sharmexcursions.com/blog</loc>
+    <lastmod>2025-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/blog/best-snorkeling-spots-sharm-el-sheikh</loc>
+    <lastmod>2025-05-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200</image:loc>
+      <image:title>Best Snorkeling Spots Sharm El Sheikh</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/blog/sharm-el-sheikh-travel-guide-2025</loc>
+    <lastmod>2025-04-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://sharmexcursions.com/blog/quad-biking-sinai-desert-safari-guide</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

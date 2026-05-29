@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Airport & Hotel Transfers Sharm El Sheikh | Sharm Excursions</title>
+  <meta name="description" content="Book private limousine or shared shuttle transfers in Sharm El Sheikh. Fixed prices, no hidden fees."/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Italiana&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --sea:#051e34;
+      --sea2:#0a2d4a;
+      --aqua:#0891b2;
+      --teal:#0e7490;
+      --gold:#b8860b;
+      --gold-bright:#e6b822;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{overflow-x:hidden;background:var(--sea);}
+    body{font-family:'DM Sans',sans-serif;color:white;min-height:100vh;}
+    h1,h2,h3{font-family:'Playfair Display',serif;}
+
+    /* ── TOP NAV ── */
+    .top-nav{
+      position:sticky;top:0;z-index:50;
+      background:rgba(5,30,52,0.97);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      padding:12px 16px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .back-btn{
+      width:38px;height:38px;border-radius:50%;
+      background:rgba(255,255,255,0.1);border:none;
+      display:flex;align-items:center;justify-content:center;
+      color:white;font-size:18px;cursor:pointer;text-decoration:none;
+    }
+
+    /* ── HERO ── */
+    .hero{
+      background:linear-gradient(160deg,var(--sea) 0%,var(--sea2) 60%,#0c3a5c 100%);
+      padding:36px 20px 32px;
+      position:relative;overflow:hidden;
+    }
+    .hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 80% 20%,rgba(230,184,34,0.08) 0%,transparent 60%);
+    }
+    .hero::after{
+      content:'';position:absolute;bottom:-2px;left:0;right:0;
+      height:28px;background:var(--sea);border-radius:28px 28px 0 0;
+    }
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:7px;
+      background:rgba(255,255,255,0.07);backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:50px;padding:5px 14px;margin-bottom:14px;
+    }
+
+    /* ── ROUTE CARDS ── */
+    .route-card{
+      background:rgba(255,255,255,0.05);
+      backdrop-filter:blur(10px);
+      border:1.5px solid rgba(255,255,255,0.1);
+      border-radius:16px;padding:14px;margin-bottom:10px;
+      cursor:pointer;transition:all 0.25s;
+    }
+    .route-card:hover{
+      background:rgba(255,255,255,0.09);
+      border-color:rgba(230,184,34,0.4);
+    }
+    .route-card.selected{
+      background:rgba(230,184,34,0.1);
+      border-color:var(--gold-bright);
+      box-shadow:0 0 0 1px rgba(230,184,34,0.3);
+    }
+    .route-label{font-size:9px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+    .route-name{font-size:14px;font-weight:700;color:white;}
+    .route-arrow{color:var(--gold-bright);font-size:18px;flex-shrink:0;}
+    .price-chip{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;
+    }
+    .chip-private{background:rgba(184,134,11,0.15);color:var(--gold-bright);border:1px solid rgba(184,134,11,0.3);}
+    .chip-shared{background:rgba(8,145,178,0.15);color:#38bdf8;border:1px solid rgba(8,145,178,0.3);}
+
+    /* ── TYPE SELECTOR CARDS ── */
+    .type-card{
+      border-radius:18px;padding:18px 14px;
+      border:2px solid rgba(255,255,255,0.1);
+      cursor:pointer;transition:all 0.25s;
+      background:rgba(255,255,255,0.04);
+      text-align:center;
+    }
+    .type-card:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.07);}
+    .type-card.selected{
+      border-color:var(--gold-bright);
+      background:rgba(230,184,34,0.1);
+      box-shadow:0 0 0 1px rgba(230,184,34,0.25);
+    }
+    .type-icon-big{font-size:34px;margin-bottom:8px;}
+    .type-name{font-weight:800;font-size:15px;color:white;margin-bottom:4px;}
+    .type-desc{font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;}
+    .type-price-chip{
+      display:inline-block;margin-top:8px;
+      padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;
+      background:rgba(8,145,178,0.2);color:#38bdf8;border:1px solid rgba(8,145,178,0.3);
+    }
+
+    /* ── PASSENGER COUNTER ── */
+    .pax-box{
+      background:rgba(255,255,255,0.05);
+      border:1.5px solid rgba(255,255,255,0.1);
+      border-radius:14px;padding:14px;margin-top:10px;
+    }
+    .cnt-row{display:flex;align-items:center;gap:0;}
+    .cnt-btn{
+      width:44px;height:44px;border-radius:12px;
+      border:1.5px solid rgba(230,184,34,0.3);
+      background:rgba(230,184,34,0.08);
+      font-size:22px;font-weight:300;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold-bright);transition:all 0.2s;flex-shrink:0;
+    }
+    .cnt-btn:hover{background:var(--gold);color:white;border-color:var(--gold);}
+    .cnt-btn:active{transform:scale(0.94);}
+    .cnt-val{
+      flex:1;text-align:center;
+      font-family:'Playfair Display',serif;
+      font-size:22px;font-weight:900;color:white;
+    }
+    .cnt-desc{font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:3px;}
+
+    /* ── SUMMARY BOX ── */
+    .summary-box{
+      background:linear-gradient(135deg,rgba(184,134,11,0.15),rgba(230,184,34,0.08));
+      border:1.5px solid rgba(230,184,34,0.3);
+      border-radius:18px;padding:18px;margin-bottom:16px;
+    }
+    .summary-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:10px;}
+    .summary-route{font-size:15px;font-weight:700;color:white;margin-bottom:2px;}
+    .summary-type{font-size:12px;color:rgba(255,255,255,0.6);}
+    .summary-total{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--gold-bright);}
+    .summary-note{font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;}
+
+    /* ── SECTION TITLE ── */
+    .sec-num{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:22px;height:22px;border-radius:50%;
+      background:var(--gold-bright);color:var(--sea);
+      font-size:11px;font-weight:900;flex-shrink:0;margin-right:8px;
+    }
+    .sec-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);font-weight:700;}
+    .sec-heading{font-family:'Playfair Display',serif;font-size:20px;color:white;margin-top:3px;}
+
+    /* ── FORM FIELDS ── */
+    .form-section{
+      background:rgba(255,255,255,0.04);
+      border:1.5px solid rgba(255,255,255,0.09);
+      border-radius:18px;padding:18px;margin-bottom:14px;
+    }
+    .form-section-title{
+      font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);
+      margin-bottom:14px;display:flex;align-items:center;gap:7px;
+    }
+    .fl{margin-bottom:12px;}
+    .fl:last-child{margin-bottom:0;}
+    .fl label{
+      font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);
+      text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:5px;
+    }
+    .fi{
+      width:100%;padding:12px 14px;border-radius:11px;
+      border:1.5px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.07);
+      font-size:14px;font-family:'DM Sans',sans-serif;
+      color:white;outline:none;transition:border-color 0.2s;
+      -webkit-appearance:none;
+    }
+    .fi::placeholder{color:rgba(255,255,255,0.3);}
+    .fi:focus{border-color:var(--gold-bright);background:rgba(255,255,255,0.1);}
+    .fi option{background:#0a2d4a;color:white;}
+    .phone-row{display:flex;gap:8px;}
+    .phone-code{width:110px;flex-shrink:0;padding:12px 10px;}
+
+    /* ── SUBMIT BTN ── */
+    .submit-btn{
+      width:100%;padding:16px;border-radius:16px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,var(--gold),var(--gold-bright));
+      color:white;font-size:16px;font-weight:800;
+      font-family:'DM Sans',sans-serif;
+      box-shadow:0 6px 22px rgba(184,134,11,0.45);
+      transition:all 0.3s;
+    }
+    .submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(184,134,11,0.55);}
+    .submit-btn:active{transform:scale(0.98);}
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav{
+      position:fixed;bottom:0;left:0;right:0;z-index:100;
+      background:rgba(5,30,52,0.97);backdrop-filter:blur(24px);
+      border-top:1px solid rgba(255,255,255,0.08);
+      display:flex;justify-content:space-around;align-items:center;
+      padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+    }
+    .nav-item{
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+      text-decoration:none;color:rgba(255,255,255,0.4);
+      font-size:10px;font-weight:600;min-width:52px;transition:color 0.2s;
+    }
+    .nav-item.active{color:var(--gold-bright);}
+    .nav-item:hover{color:rgba(255,255,255,0.8);}
+    .nav-icon{font-size:22px;line-height:1;}
+
+    /* ── TOAST ── */
+    .toast{
+      position:fixed;bottom:76px;left:50%;
+      transform:translateX(-50%) translateY(14px);
+      background:var(--sea2);color:white;
+      padding:9px 18px;border-radius:50px;
+      font-size:13px;font-weight:600;z-index:300;
+      opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;
+      box-shadow:0 4px 16px rgba(0,0,0,0.35);
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    /* ── WA FLOAT ── */
+    .wa-float{
+      position:fixed;bottom:76px;right:14px;z-index:150;
+      width:50px;height:50px;background:#25d366;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:24px;box-shadow:0 4px 18px rgba(37,211,102,0.45);
+      text-decoration:none;transition:transform 0.25s;
+    }
+    .wa-float:active{transform:scale(0.92);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .au{animation:fadeUp 0.5s ease both;}
+    .d1{animation-delay:0.07s}.d2{animation-delay:0.14s}.d3{animation-delay:0.21s}
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<a href="https://wa.me/201223373289" target="_blank" class="wa-float">💬</a>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <a href="index.html" class="back-btn">←</a>
+  <div style="flex:1">
+    <div style="font-weight:700;font-size:14px;color:white">Transfers</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.4)">Sharm El Sheikh</div>
+  </div>
+  <a href="booking.html" style="font-size:22px;text-decoration:none">🛒</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div style="max-width:480px;margin:0 auto;position:relative;z-index:1">
+    <div class="hero-badge au">
+      <span style="width:7px;height:7px;background:#4ade80;border-radius:50%;"></span>
+      <span style="color:rgba(255,255,255,0.8);font-size:11px;font-weight:600">Point-to-Point Transfers</span>
+    </div>
+    <h1 style="font-size:28px;font-weight:900;color:white;line-height:1.2;margin-bottom:6px" class="au d1">
+      Sharm El Sheikh<br/><span style="color:var(--gold-bright)">Transfers</span>
+    </h1>
+    <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6" class="au d2">
+      Fixed prices · No meters · No surprises<br/>Private limo or shared shuttle — you choose.
+    </p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main style="padding:20px 16px 100px;max-width:480px;margin:0 auto">
+
+  <!-- STEP 1: ROUTE -->
+  <div style="margin-bottom:24px" class="au">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <span class="sec-num">1</span>
+      <div>
+        <div class="sec-title">Step One</div>
+        <div class="sec-heading">Select Your Route</div>
+      </div>
+    </div>
+    <div id="routeList"></div>
+  </div>
+
+  <!-- STEP 2: TYPE -->
+  <div style="margin-bottom:24px" class="au d1">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <span class="sec-num">2</span>
+      <div>
+        <div class="sec-title">Step Two</div>
+        <div class="sec-heading">Choose Your Ride</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="type-card selected" id="typePrivate" onclick="selectType('private')">
+        <div class="type-icon-big">🚘</div>
+        <div class="type-name">Private</div>
+        <div class="type-desc">Limo / SUV<br/>Just your group</div>
+        <div class="type-price-chip">Fixed per vehicle</div>
+      </div>
+      <div class="type-card" id="typeShared" onclick="selectType('shared')">
+        <div class="type-icon-big">🚌</div>
+        <div class="type-name">Shared</div>
+        <div class="type-desc">Shuttle bus<br/>Meet fellow travelers</div>
+        <div class="type-price-chip">Per person</div>
+      </div>
+    </div>
+    <!-- PAX COUNTER (shared only) -->
+    <div id="paxSection" class="pax-box" style="display:none">
+      <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Number of Passengers</div>
+      <div class="cnt-row">
+        <button class="cnt-btn" onclick="changePax(-1)">−</button>
+        <div>
+          <div class="cnt-val" id="paxVal">1</div>
+          <div class="cnt-desc">Shared price is per person</div>
+        </div>
+        <button class="cnt-btn" onclick="changePax(1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE SUMMARY -->
+  <div class="summary-box au d2" id="summaryBox">
+    <div class="summary-label">Booking Summary</div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div style="flex:1">
+        <div class="summary-route" id="summaryRoute">Select a route above ↑</div>
+        <div class="summary-type" id="summaryType">—</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:rgba(255,255,255,0.45)">Total</div>
+        <div class="summary-total" id="summaryTotal">$—</div>
+      </div>
+    </div>
+    <div class="summary-note">✓ No hidden charges · Cash on arrival</div>
+  </div>
+
+  <!-- STEP 3: DETAILS FORM -->
+  <div class="au d2">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <span class="sec-num">3</span>
+      <div>
+        <div class="sec-title">Step Three</div>
+        <div class="sec-heading">Your Details</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">👤 Guest Information</div>
+      <div class="fl">
+        <label for="tf-name">Full Name *</label>
+        <input type="text" id="tf-name" class="fi" placeholder="e.g. John Smith" autocomplete="name"/>
+      </div>
+      <div class="fl">
+        <label for="tf-hotel">Hotel Name *</label>
+        <input type="text" id="tf-hotel" class="fi" placeholder="e.g. Hilton Sharm Dreams"/>
+      </div>
+      <div class="fl">
+        <label>WhatsApp Number *</label>
+        <div class="phone-row">
+          <select class="fi phone-code" id="tf-code">
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+39">🇮🇹 +39</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+48">🇵🇱 +48</option>
+            <option value="+31">🇳🇱 +31</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+46">🇸🇪 +46</option>
+            <option value="+45">🇩🇰 +45</option>
+            <option value="+41">🇨🇭 +41</option>
+            <option value="+20">🇪🇬 +20</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+90">🇹🇷 +90</option>
+            <option value="+30">🇬🇷 +30</option>
+            <option value="+40">🇷🇴 +40</option>
+            <option value="+380">🇺🇦 +380</option>
+          </select>
+          <input type="tel" id="tf-phone" class="fi" placeholder="7911 123456" autocomplete="tel"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📅 Travel Details</div>
+      <div class="fl">
+        <label for="tf-date">Travel Date *</label>
+        <input type="date" id="tf-date" class="fi"/>
+      </div>
+      <div class="fl">
+        <label for="tf-time">Arrival / Departure Time</label>
+        <input type="time" id="tf-time" class="fi"/>
+      </div>
+      <div class="fl">
+        <label for="tf-flight">Flight Number (optional)</label>
+        <input type="text" id="tf-flight" class="fi" placeholder="e.g. EK 927"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAY ON ARRIVAL BADGE -->
+  <div style="background:rgba(16,185,129,0.1);border:1.5px solid rgba(16,185,129,0.25);border-radius:14px;padding:14px;display:flex;gap:10px;margin-bottom:16px">
+    <span style="font-size:22px">💳</span>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#4ade80">Pay on Arrival — Zero Risk</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px;line-height:1.5">No payment now. Our driver collects cash on pickup day. Fixed price — no hidden fees.</div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <button class="submit-btn" onclick="submitTransfer()">
+    Book Now →
+  </button>
+  <p style="text-align:center;font-size:11px;color:rgba(255,255,255,0.35);margin-top:10px">Confirmation via WhatsApp within minutes</p>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Home</span></a>
+  <a href="index.html#tours" class="nav-item"><span class="nav-icon">🏍️</span><span>Safari</span></a>
+  <a href="booking.html" class="nav-item"><span class="nav-icon">🛒</span><span>Book</span></a>
+  <a href="wishlist.html" class="nav-item"><span class="nav-icon">❤️</span><span>Saved</span></a>
+  <a href="about.html" class="nav-item"><span class="nav-icon">ℹ️</span><span>About</span></a>
+</nav>
+
+<!-- ADMIN LINK -->
+<a href="admin.html" style="position:fixed;bottom:72px;left:10px;z-index:200;background:rgba(5,30,52,0.7);color:rgba(255,255,255,0.4);padding:4px 8px;border-radius:6px;font-size:9px;font-weight:700;text-decoration:none;letter-spacing:1px" title="Admin">⚙️</a>
+
+<script>
+// ── LOAD ROUTES FROM ADMIN OR USE DEFAULTS ──
+const DEFAULT_ROUTES = [
+  {id:"t1",from:"Sharm El Sheikh Airport",to:"Naama Bay Hotels",privateCar:15,sharedBus:5},
+  {id:"t2",from:"Sharm El Sheikh Airport",to:"Sharks Bay / Coral Bay",privateCar:20,sharedBus:7},
+  {id:"t3",from:"Sharm El Sheikh Airport",to:"Ras Nasrani / Marriott Area",privateCar:25,sharedBus:8},
+  {id:"t4",from:"Naama Bay",to:"Old Market (Sharm El Qadeem)",privateCar:12,sharedBus:4},
+  {id:"t5",from:"Naama Bay",to:"Soho Square",privateCar:10,sharedBus:4},
+  {id:"t6",from:"Any Hotel",to:"Dahab (Day Trip Transfer)",privateCar:70,sharedBus:20},
+  {id:"t7",from:"Any Hotel",to:"St. Catherine Monastery",privateCar:80,sharedBus:25},
+];
+
+let ROUTES = JSON.parse(localStorage.getItem('admin_transfers') || 'null') || DEFAULT_ROUTES;
+let selectedRoute = null;
+let selectedType = 'private';
+let paxCount = 1;
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── RENDER ROUTES ──
+function renderRoutes() {
+  const el = document.getElementById('routeList');
+  el.innerHTML = ROUTES.map(r => `
+    <div class="route-card" id="rc-${r.id}" onclick="selectRoute('${r.id}')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="flex:1">
+          <div class="route-label">From</div>
+          <div class="route-name">${r.from}</div>
+        </div>
+        <span class="route-arrow">→</span>
+        <div style="flex:1;text-align:right">
+          <div class="route-label">To</div>
+          <div class="route-name">${r.to}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="price-chip chip-private">🚘 $${r.privateCar}/vehicle</span>
+        <span class="price-chip chip-shared">🚌 $${r.sharedBus}/person</span>
+      </div>
+    </div>`).join('');
+}
+
+function selectRoute(id) {
+  selectedRoute = ROUTES.find(r => r.id === id);
+  document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('rc-' + id)?.classList.add('selected');
+  updateSummary();
+}
+
+function selectType(type) {
+  selectedType = type;
+  document.getElementById('typePrivate').classList.toggle('selected', type === 'private');
+  document.getElementById('typeShared').classList.toggle('selected', type === 'shared');
+  document.getElementById('paxSection').style.display = type === 'shared' ? 'block' : 'none';
+  updateSummary();
+}
+
+function changePax(d) {
+  paxCount = Math.max(1, paxCount + d);
+  document.getElementById('paxVal').textContent = paxCount;
+  updateSummary();
+}
+
+function updateSummary() {
+  const route = document.getElementById('summaryRoute');
+  const type  = document.getElementById('summaryType');
+  const total = document.getElementById('summaryTotal');
+  if (!selectedRoute) {
+    route.textContent = 'Select a route above ↑';
+    type.textContent = '—';
+    total.textContent = '$—';
+    return;
+  }
+  route.textContent = `${selectedRoute.from} → ${selectedRoute.to}`;
+  let cost = 0;
+  if (selectedType === 'private') {
+    cost = selectedRoute.privateCar;
+    type.textContent = '🚘 Private Limousine / SUV · per vehicle';
+  } else {
+    cost = selectedRoute.sharedBus * paxCount;
+    type.textContent = `🚌 Shared Shuttle · ${paxCount} passenger${paxCount !== 1 ? 's' : ''} × $${selectedRoute.sharedBus}`;
+  }
+  total.textContent = `$${cost}`;
+}
+
+function submitTransfer() {
+  const name  = document.getElementById('tf-name').value.trim();
+  const hotel = document.getElementById('tf-hotel').value.trim();
+  const date  = document.getElementById('tf-date').value;
+  const phone = document.getElementById('tf-code').value + document.getElementById('tf-phone').value.trim();
+  const time  = document.getElementById('tf-time').value;
+  const flight = document.getElementById('tf-flight').value.trim();
+
+  if (!name || !hotel || !date || !phone) { showToast('⚠️ Please fill all required fields'); return; }
+  if (!selectedRoute) { showToast('⚠️ Please select a route first'); return; }
+
+  const cost = selectedType === 'private'
+    ? selectedRoute.privateCar
+    : selectedRoute.sharedBus * paxCount;
+  const typeLabel = selectedType === 'private'
+    ? 'Private Limousine / SUV'
+    : `Shared Shuttle (${paxCount} passenger${paxCount !== 1 ? 's' : ''})`;
+
+  const ref = 'TR' + Date.now().toString().slice(-6);
+  const msg =
+    `🚗 *Transfer Booking — Sharm Excursions*\n` +
+    `📋 Ref: ${ref}\n\n` +
+    `👤 *Name:* ${name}\n` +
+    `🏨 *Hotel:* ${hotel}\n` +
+    `📱 *WhatsApp:* ${phone}\n\n` +
+    `🗺️ *Route:* ${selectedRoute.from} → ${selectedRoute.to}\n` +
+    `🚘 *Type:* ${typeLabel}\n` +
+    `📅 *Date:* ${date}\n` +
+    (time   ? `🕐 *Time:* ${time}\n`     : '') +
+    (flight ? `✈️ *Flight:* ${flight}\n` : '') +
+    `\n💰 *Total: $${cost} — Pay on Arrival*\n\n` +
+    `✅ No advance payment required.`;
+
+  // Save to admin
+  const social  = JSON.parse(localStorage.getItem('admin_social') || '{}');
+  const waNum   = social.wa || '201223373289';
+  const adminB  = JSON.parse(localStorage.getItem('admin_bookings') || '[]');
+  adminB.push({
+    ref, name, hotel, phone,
+    tours: [{title:`Transfer: ${selectedRoute.from} → ${selectedRoute.to}`, subtotal: cost}],
+    total: cost, status: 'new',
+    date: new Date().toLocaleDateString('en-GB'),
+  });
+  localStorage.setItem('admin_bookings', JSON.stringify(adminB));
+
+  window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+  showToast('✅ Transfer booking sent!');
+}
+
+// Load WhatsApp from admin settings
+(function(){
+  try {
+    const s = JSON.parse(localStorage.getItem('admin_social') || '{}');
+    const wa = s.wa || '201223373289';
+    const msg = s.waMsg || "Hi! I'd like to book a transfer in Sharm El Sheikh";
+    document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+      if (!a.href.includes('text=')) a.href = `https://wa.me/${wa}`;
+    });
+  } catch(e){}
+})();
+
+// Init
+document.getElementById('tf-date').min = new Date().toISOString().split('T')[0];
+renderRoutes();
+updateSummary();
+</script>
+</body>
+</html>

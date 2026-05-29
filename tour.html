@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="metaTitle">Tour Detail — Sharm Excursions</title>
+  <meta name="description" id="metaDesc" content="" />
+  <meta property="og:title" id="ogTitle" content="" />
+  <meta property="og:description" id="ogDesc" content="" />
+  <meta property="og:image" id="ogImage" content="" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Italiana&display=swap" rel="stylesheet" />
+  <style>
+    :root{--sea:#051e34;--sea2:#0a2d4a;--aqua:#0891b2;--teal:#0e7490;--gold:#b8860b;--gold-bright:#e6b822;--sand:#fef3c7;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{overflow-x:hidden;}
+    body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#0f172a;}
+    h1,h2,h3{font-family:'Playfair Display',serif;}
+
+    /* TOP NAV */
+    .top-nav{position:sticky;top:0;z-index:50;background:rgba(5,30,52,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;max-width:100%;}
+    .back-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;cursor:pointer;text-decoration:none;}
+    .nav-title{font-size:14px;font-weight:700;color:white;flex:1;text-align:center;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+    /* GALLERY */
+    .gallery-wrap{position:relative;height:280px;background:var(--sea);overflow:hidden;}
+    .gallery-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
+    .gallery-track::-webkit-scrollbar{display:none;}
+    .gallery-slide{flex:0 0 100%;scroll-snap-align:start;height:100%;}
+    .gallery-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+    .gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,30,52,0.6) 0%,transparent 50%);}
+    .gallery-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+    .gdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);transition:all 0.3s;cursor:pointer;}
+    .gdot.active{width:18px;border-radius:3px;background:var(--gold-bright);}
+    .gallery-counter{position:absolute;top:12px;right:12px;background:rgba(5,30,52,0.7);backdrop-filter:blur(8px);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;color:white;}
+    .heart-float{position:absolute;top:12px;right:56px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all 0.25s;}
+    .heart-float.liked{background:#fee2e2;}
+
+    /* CONTENT */
+    .content-wrap{padding:16px 16px 120px;max-width:480px;margin:0 auto;}
+
+    /* HEADER BLOCK */
+    .cat-pill{display:inline-block;background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.3);padding:3px 12px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--aqua);margin-bottom:8px;}
+    .tour-title{font-size:22px;line-height:1.25;color:var(--sea2);margin-bottom:4px;}
+    .tour-tagline{font-size:13px;color:#64748b;margin-bottom:12px;}
+
+    /* RATING ROW */
+    .rating-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+    .rating-pill{display:inline-flex;align-items:center;gap:4px;background:#fef3c7;border:1px solid #fbbf24;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;color:#92400e;}
+    .reviews-count{font-size:12px;color:#64748b;}
+
+    /* GUEST AVATARS */
+    .guest-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:white;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:16px;}
+    .g-avatar{width:26px;height:26px;border-radius:50%;border:2px solid white;margin-left:-7px;background:linear-gradient(135deg,var(--aqua),var(--sea2));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;}
+    .g-avatar:first-child{margin-left:0;}
+    .guest-text{font-size:11px;color:#64748b;}
+    .guest-text strong{color:var(--sea2);}
+
+    /* QUICK INFO GRID */
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+    .info-card{background:white;border-radius:14px;padding:11px 12px;border:1px solid #e8edf2;display:flex;align-items:center;gap:9px;}
+    .info-icon{font-size:20px;flex-shrink:0;}
+    .info-lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;}
+    .info-val{font-size:13px;font-weight:700;color:var(--sea2);}
+
+    /* PRICING BOX */
+    .price-box{background:linear-gradient(135deg,var(--sea),var(--sea2));border-radius:18px;padding:16px 18px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06);}
+    .price-col{flex:1;}
+    .price-lbl{font-size:10px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+    .price-amt{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--gold-bright);}
+    .price-note{font-size:9px;color:rgba(255,255,255,0.4);margin-top:1px;}
+    .price-divider{width:1px;background:rgba(255,255,255,0.12);margin:0 12px;}
+
+    /* ACCORDION */
+    .accordion-item{background:white;border-radius:16px;margin-bottom:8px;border:1px solid #e8edf2;overflow:hidden;transition:box-shadow 0.2s;}
+    .accordion-item.open{box-shadow:0 4px 16px rgba(0,0,0,0.07);}
+    .accordion-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+    .accordion-title{font-size:14px;font-weight:700;color:var(--sea2);display:flex;align-items:center;gap:8px;}
+    .accordion-chevron{font-size:16px;color:var(--aqua);transition:transform 0.3s;display:inline-block;}
+    .accordion-item.open .accordion-chevron{transform:rotate(180deg);}
+    .accordion-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;}
+    .accordion-item.open .accordion-body{max-height:1200px;padding:0 16px 16px;}
+    .acc-body-inner{font-size:13px;color:#475569;line-height:1.65;}
+
+    /* CHECK LIST */
+    .check-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .check-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#475569;padding-bottom:6px;border-bottom:1px solid #f8fafc;}
+    .check-list li:last-child{border:none;padding:0;}
+
+    /* HIGHLIGHT LIST */
+    .highlight-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .highlight-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#475569;}
+    .hl-dot{width:6px;height:6px;border-radius:50%;background:var(--gold-bright);flex-shrink:0;margin-top:5px;}
+
+    /* TIP BOX */
+    .tip-box{background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:12px 14px;margin-top:12px;display:flex;gap:8px;}
+    .tip-box p{font-size:12px;color:#78350f;line-height:1.5;margin:0;}
+
+    /* REVIEWS */
+    .review-card{background:white;border-radius:14px;padding:14px;border:1px solid #e8edf2;margin-bottom:8px;}
+    .reviewer-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+    .reviewer-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0;}
+    .reviewer-name{font-size:13px;font-weight:700;color:var(--sea2);}
+    .review-stars{color:#f59e0b;font-size:11px;letter-spacing:-0.5px;}
+    .review-text{font-size:12px;color:#475569;line-height:1.55;}
+    .review-date{font-size:10px;color:#94a3b8;margin-top:5px;}
+
+    /* SHARE ROW */
+    .share-row{display:flex;gap:8px;margin-top:16px;}
+    .share-btn{flex:1;padding:11px;border-radius:12px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+
+    /* STICKY BOOK BAR */
+    .sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-top:1px solid #e2e8f0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:100%;}
+    .bar-price{}
+    .bar-from{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;}
+    .bar-amount{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--sea2);line-height:1;}
+    .bar-note{font-size:9px;color:#94a3b8;margin-top:1px;}
+    .bar-book-btn{flex:1;max-width:200px;padding:14px 20px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold-bright));color:white;font-size:15px;font-weight:800;font-family:'DM Sans',sans-serif;box-shadow:0 5px 18px rgba(180,134,11,0.4);transition:all 0.25s;}
+    .bar-book-btn:active{transform:scale(0.97);}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--sea2);color:white;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.25);}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <a href="javascript:history.back()" class="back-btn">←</a>
+  <div class="nav-title" id="navTitle">Tour Detail</div>
+  <button class="back-btn" onclick="sharePost()" style="right:16px">📤</button>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-wrap">
+  <div class="gallery-track" id="galleryTrack"></div>
+  <div class="gallery-overlay"></div>
+  <div class="gallery-dots" id="galleryDots"></div>
+  <div class="gallery-counter" id="galleryCounter">1 / 1</div>
+  <button class="heart-float" id="heartFloat" onclick="toggleHeart()">🤍</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+
+  <!-- HEADER -->
+  <div id="catPill" class="cat-pill">Sea Trips</div>
+  <h1 class="tour-title" id="tourTitle">Loading…</h1>
+  <p class="tour-tagline" id="tourTagline"></p>
+
+  <!-- RATING ROW -->
+  <div class="rating-row">
+    <span class="rating-pill" id="ratingPill">★ 5.0</span>
+    <span class="reviews-count" id="reviewsCount"></span>
+  </div>
+
+  <!-- GUEST ROW -->
+  <div class="guest-row" id="guestRow">
+    <div style="display:flex" id="guestAvatars"></div>
+    <div class="guest-text" id="guestText"></div>
+  </div>
+
+  <!-- QUICK INFO -->
+  <div class="info-grid">
+    <div class="info-card"><span class="info-icon">⏱</span><div><div class="info-lbl">Duration</div><div class="info-val" id="infoDuration">—</div></div></div>
+    <div class="info-card"><span class="info-icon">🕐</span><div><div class="info-lbl">Pickup Time</div><div class="info-val" id="infoPickup">—</div></div></div>
+    <div class="info-card"><span class="info-icon">🏨</span><div><div class="info-lbl">Hotel Pickup</div><div class="info-val">Included ✓</div></div></div>
+    <div class="info-card"><span class="info-icon">💳</span><div><div class="info-lbl">Payment</div><div class="info-val">On Arrival</div></div></div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="price-box">
+    <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">Pricing · No Taxes · No Hidden Fees</div>
+    <div style="display:flex;align-items:stretch">
+      <div class="price-col">
+        <div class="price-lbl">Adults (12+)</div>
+        <div class="price-amt" id="adultPriceEl">$—</div>
+        <div class="price-note">per person</div>
+      </div>
+      <div class="price-divider"></div>
+      <div class="price-col" style="padding-left:12px">
+        <div class="price-lbl">Children (4–9)</div>
+        <div class="price-amt" id="childPriceEl">$—</div>
+        <div class="price-note">half price</div>
+      </div>
+      <div class="price-divider"></div>
+      <div class="price-col" style="padding-left:12px">
+        <div class="price-lbl">Infants (&lt;4)</div>
+        <div class="price-amt" style="color:#4ade80">FREE</div>
+        <div class="price-note">no charge</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCORDIONS -->
+  <div id="accAbout" class="accordion-item open">
+    <div class="accordion-header" onclick="toggleAcc('accAbout')">
+      <span class="accordion-title">📋 About This Activity</span>
+      <span class="accordion-chevron">⌄</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-body-inner">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:10px;padding:10px;background:#f0fdf4;border-radius:10px"><span style="font-size:18px">✅</span><div><div style="font-size:12px;font-weight:700;color:#15803d">Book Now · Pay Later</div><div style="font-size:11px;color:#16a34a;margin-top:2px">Reserve free. Pay cash on the day of your tour.</div></div></div>
+          <div style="display:flex;gap:10px;padding:10px;background:#eff6ff;border-radius:10px"><span style="font-size:18px">🏨</span><div><div style="font-size:12px;font-weight:700;color:#1d4ed8">Hotel Pickup Included</div><div style="font-size:11px;color:#3b82f6;margin-top:2px">We collect you from your hotel lobby — no charge.</div></div></div>
+          <div style="display:flex;gap:10px;padding:10px;background:#fefce8;border-radius:10px"><span style="font-size:18px">👶</span><div><div style="font-size:12px;font-weight:700;color:#ca8a04">Family Pricing</div><div style="font-size:11px;color:#d97706;margin-top:2px">Children (4–9) half price. Infants under 4 travel FREE.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="accHighlights" class="accordion-item">
+    <div class="accordion-header" onclick="toggleAcc('accHighlights')">
+      <span class="accordion-title">✨ Highlights</span>
+      <span class="accordion-chevron">⌄</span>
+    </div>
+    <div class="accordion-body">
+      <ul class="highlight-list" id="highlightsList"></ul>
+    </div>
+  </div>
+
+  <div id="accIncluded" class="accordion-item">
+    <div class="accordion-header" onclick="toggleAcc('accIncluded')">
+      <span class="accordion-title">🎒 What's Included</span>
+      <span class="accordion-chevron">⌄</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-body-inner">
+        <ul class="check-list" id="includedList"></ul>
+        <div style="font-size:12px;font-weight:700;color:#64748b;margin:12px 0 6px">Not Included</div>
+        <ul class="check-list" id="notIncludedList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="accDesc" class="accordion-item">
+    <div class="accordion-header" onclick="toggleAcc('accDesc')">
+      <span class="accordion-title">📖 Full Description & Tips</span>
+      <span class="accordion-chevron">⌄</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-body-inner">
+        <p id="tourDesc" style="margin-bottom:12px"></p>
+        <div class="tip-box">
+          <span style="font-size:18px">💡</span>
+          <p id="tourTip"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div style="margin-top:20px;margin-bottom:12px">
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--aqua);font-weight:700;margin-bottom:3px">What Travelers Say</div>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--sea2)">Guest Reviews</div>
+  </div>
+  <div class="review-card">
+    <div class="reviewer-row">
+      <div class="reviewer-avatar" style="background:linear-gradient(135deg,#0891b2,#0a3d62)">SJ</div>
+      <div><div class="reviewer-name">Sarah J. · 🇬🇧</div><div class="review-stars">★★★★★</div></div>
+    </div>
+    <p class="review-text">Absolutely breathtaking! The guide was professional and the views were stunning. Best excursion we've ever booked — 100% recommend.</p>
+    <div class="review-date">March 2025 · Verified Booking</div>
+  </div>
+  <div class="review-card">
+    <div class="reviewer-row">
+      <div class="reviewer-avatar" style="background:linear-gradient(135deg,#059669,#0a3d62)">MK</div>
+      <div><div class="reviewer-name">Marco K. · 🇩🇪</div><div class="review-stars">★★★★★</div></div>
+    </div>
+    <p class="review-text">Perfekt! Picked up right on time from our hotel. Kids loved every minute. Pay on arrival is so convenient — no risk at all. Booking again next year!</p>
+    <div class="review-date">April 2025 · Verified Booking</div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="share-row">
+    <button class="share-btn" style="background:#25d366;color:white" onclick="shareWA()">💬 Share on WhatsApp</button>
+    <button class="share-btn" style="background:#f1f5f9;color:#0f172a;flex:0 0 auto;padding:11px 16px" onclick="copyLink()">🔗</button>
+  </div>
+
+</div>
+
+<!-- STICKY BOOK BAR -->
+<div class="sticky-bar">
+  <div class="bar-price">
+    <div class="bar-from">From</div>
+    <div class="bar-amount" id="barAmount">$—</div>
+    <div class="bar-note">per adult · no hidden fees</div>
+  </div>
+  <button class="bar-book-btn" onclick="bookNow()">Book Now →</button>
+</div>
+
+<script>
+const TOURS_DB = {
+  "quad-bike-safari":{id:"quad-bike-safari",category:"safari",title:"Sharm El Sheikh: Quad Bike Safari Adventure",tagline:"Ride through the golden Sinai desert at sunset",price:35,childPrice:17.5,duration:"3 Hours",pickupTime:"8:00 AM / 3:00 PM",rating:4.9,reviewCount:312,guests:["SJ","MK","AL","PW"],images:["https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80","https://images.unsplash.com/photo-1469041797191-50ace28483c3?w=800&q=80","https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80"],highlights:["Ride a quad bike through dramatic Sinai sand dunes","Stop at a Bedouin village for authentic mint tea","Watch the sun set over the Sinai mountains","Professional guide accompanies the entire trip","Camel ride option available at extra cost"],included:["Quad bike rental","Safety helmet & goggles","Hotel pickup & drop-off","Bedouin tea stop","Experienced guide"],notIncluded:["Gratuities","Personal travel insurance","Alcoholic beverages","Camel ride (optional extra)"],description:"Experience the raw beauty of the Sinai Desert on this thrilling quad bike safari. Departing from your hotel, you'll head into the vast golden sands for an adventure that mixes adrenaline with authentic Bedouin culture. Your expert guide leads you through winding desert trails, towering dunes, and ancient pathways before a pit-stop at a traditional Bedouin camp for sweet mint tea.",tips:"Wear light, breathable clothing and closed-toe shoes. Sunscreen is essential. Bring a camera — the desert light is magical at golden hour.",metaTitle:"Quad Bike Safari Sharm El Sheikh | From $35 | Hotel Pickup",metaDesc:"Book the best quad bike safari in Sharm El Sheikh. Ride through Sinai desert dunes, visit a Bedouin village. Hotel pickup included. Pay on arrival."},
+  "jeep-safari-stars":{id:"jeep-safari-stars",category:"safari",title:"Sharm El Sheikh: Jeep Safari & Stargazing",tagline:"Desert dunes by day, a billion stars by night",price:45,childPrice:22.5,duration:"6 Hours",pickupTime:"2:00 PM",rating:4.8,reviewCount:198,guests:["RB","TA","PW"],images:["https://images.unsplash.com/photo-1469041797191-50ace28483c3?w=800&q=80","https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80"],highlights:["4WD jeep convoy through dramatic desert","BBQ dinner under the stars","Astronomy guide with telescope","Sandboarding on the dunes","Henna painting experience"],included:["4WD jeep transport","BBQ dinner","Hotel transfers","Telescope stargazing","Guide"],notIncluded:["Gratuities","Alcoholic drinks"],description:"An unforgettable journey into the heart of the Sinai wilderness. By day your convoy of 4WD jeeps tears through dramatic landscapes. By night, around a flickering campfire, a knowledgeable astronomy guide reveals the secrets of one of the world's clearest stargazing skies.",tips:"Bring a light jacket for the evening — desert nights are cool even in summer.",metaTitle:"Jeep Safari & Stargazing Sharm El Sheikh | $45 | Dinner Included",metaDesc:"Join the Jeep Safari & Stargazing tour in Sharm. BBQ dinner, stargazing with telescope, sandboarding. Pay on arrival."},
+  "snorkeling-ras-mohammed":{id:"snorkeling-ras-mohammed",category:"sea-trips",title:"Sharm El Sheikh: Ras Mohammed Snorkeling",tagline:"Dive into Egypt's most spectacular coral reefs",price:40,childPrice:20,duration:"7 Hours",pickupTime:"7:30 AM",rating:5.0,reviewCount:521,guests:["EM","JD","KL","NP","CF"],images:["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80","https://images.unsplash.com/photo-1499242611767-cf8b9be02854?w=800&q=80","https://images.unsplash.com/photo-1560275619-4662e36fa65c?w=800&q=80"],highlights:["Snorkel at Ras Mohammed National Park","Three different snorkeling spots","Lunch and soft drinks on board","Full snorkeling equipment provided","Marine biologist guide"],included:["Boat trip","Snorkeling equipment","Lunch & soft drinks","Hotel transfers","National park fees"],notIncluded:["Alcoholic beverages","Underwater camera (rental available)","Gratuities"],description:"Ras Mohammed National Park is considered one of the world's top 10 snorkeling destinations. This full-day boat trip explores three spectacular reefs teeming with parrotfish, sea turtles, rays, and over 1,000 species of fish. Your on-board marine biologist makes this educational as much as adventurous.",tips:"Bring reef-safe sunscreen only — the park has strict environmental rules. Motion sickness tablets recommended for sensitive travelers.",metaTitle:"Ras Mohammed Snorkeling Trip | $40 | Lunch Included | Sharm",metaDesc:"Best snorkeling in Sharm El Sheikh at Ras Mohammed. Equipment, lunch & hotel pickup included. Rated 5 stars by 500+ travelers."},
+  "sunset-boat-party":{id:"sunset-boat-party",category:"sea-trips",title:"Sharm El Sheikh: Sunset Boat Party",tagline:"Dance, swim, and toast to the Red Sea sunset",price:30,childPrice:15,duration:"4 Hours",pickupTime:"3:00 PM",rating:4.7,reviewCount:445,guests:["CF","BM","AS","LH"],images:["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80","https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80"],highlights:["Cruise along the Sharm coastline at sunset","Live DJ and dance floor on deck","Swimming stop at coral reef","Sunset cocktail hour","Shisha available on deck"],included:["Boat cruise","DJ entertainment","Soft drinks","Hotel transfers"],notIncluded:["Alcoholic drinks (available for purchase)","Shisha (optional extra)"],description:"The most vibrant evening on the Red Sea. As the sun turns the sky amber and rose, you'll be aboard a beautifully lit boat with a live DJ, fellow travelers, and the most photogenic backdrop in Egypt. Swim in crystal-clear water, dance on the top deck, and watch day turn to night.",tips:"Bring a light change of clothes after swimming. Adults only experience — the atmosphere is electric!",metaTitle:"Sunset Boat Party Sharm El Sheikh | $30 | DJ & Red Sea Views",metaDesc:"Join the Sunset Boat Party in Sharm El Sheikh. DJ, swimming, cocktails and the most beautiful Red Sea sunset."},
+  "beach-club-vip":{id:"beach-club-vip",category:"vibes",title:"Sharm El Sheikh: Beach Club VIP Day",tagline:"Luxury sunbeds, private pools, and ocean views",price:55,childPrice:27.5,duration:"Full Day",pickupTime:"9:00 AM",rating:4.9,reviewCount:267,guests:["LH","VG","TM","OB"],images:["https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80"],highlights:["Private beach access all day","VIP sunbed & umbrella included","Buffet lunch at beachside restaurant","Water sports discounts","Infinity pool access"],included:["VIP beach access","Sunbed & umbrella","Buffet lunch","Hotel transfers"],notIncluded:["Alcoholic drinks","Water sports activities","Spa treatments"],description:"Escape to Sharm's most exclusive beach club for a day of pure luxury. Lounge on premium sunbeds inches from turquoise water, dip in infinity pools overlooking the Red Sea, and feast on a fresh seafood buffet. The perfect reset day between adventures.",tips:"Book early — VIP spots are limited to 20 guests per day.",metaTitle:"Beach Club VIP Day Sharm El Sheikh | $55 | Lunch Included",metaDesc:"Spend a VIP day at Sharm El Sheikh's best beach club. Private sunbeds, infinity pool, buffet lunch and hotel transfers."},
+  "parasailing":{id:"parasailing",category:"vibes",title:"Sharm El Sheikh: Parasailing over the Red Sea",tagline:"Soar 150m above the crystal-clear Red Sea",price:40,childPrice:20,duration:"1.5 Hours",pickupTime:"Flexible",rating:4.8,reviewCount:189,guests:["OB","SS","FN"],images:["https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80"],highlights:["Fly 150m above the Red Sea","Stunning aerial views of Sinai & Saudi Arabia","Tandem or solo options","Photos & videos package available","Coast Guard safety certified"],included:["Parasail flight","Safety harness & equipment","Hotel transfers","Safety briefing"],notIncluded:["Photos package (optional $15)","Gratuities"],description:"The most exhilarating 15 minutes of your life. Strapped into a premium parasailing rig, you'll ascend 150 meters above the sparkling Red Sea as the entire Gulf of Aqaba unfolds beneath you — Saudi Arabia to your right, Sinai mountains to your left.",tips:"Minimum weight 40kg. Maximum combined tandem 200kg. Not recommended for those with heart conditions.",metaTitle:"Parasailing Sharm El Sheikh | $40 | 150m Over Red Sea",metaDesc:"Fly 150m above the Red Sea. Hotel pickup, safety certified. Book from $40."},
+};
+
+let cart = JSON.parse(localStorage.getItem('sharmCart') || '[]');
+let currentTour = null;
+
+function getTourId() { return new URLSearchParams(window.location.search).get('id') || 'snorkeling-ras-mohammed'; }
+function saveCart() { localStorage.setItem('sharmCart', JSON.stringify(cart)); }
+
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// GALLERY
+function initGallery(images) {
+  const track = document.getElementById('galleryTrack');
+  const dots = document.getElementById('galleryDots');
+  const counter = document.getElementById('galleryCounter');
+  track.innerHTML = images.map(img => `<div class="gallery-slide"><img src="${img}" alt="" loading="lazy"/></div>`).join('');
+  dots.innerHTML = images.map((_, i) => `<div class="gdot ${i===0?'active':''}" onclick="goGallery(${i})"></div>`).join('');
+  counter.textContent = `1 / ${images.length}`;
+  track.addEventListener('scroll', () => {
+    const idx = Math.round(track.scrollLeft / track.offsetWidth);
+    document.querySelectorAll('.gdot').forEach((d,i) => d.classList.toggle('active', i===idx));
+    counter.textContent = `${idx+1} / ${images.length}`;
+  });
+}
+function goGallery(i) {
+  const track = document.getElementById('galleryTrack');
+  track.scrollTo({ left: i * track.offsetWidth, behavior: 'smooth' });
+}
+
+// POPULATE
+function populatePage(t) {
+  document.title = t.metaTitle;
+  document.getElementById('metaTitle').textContent = t.metaTitle;
+  document.getElementById('metaDesc').content = t.metaDesc;
+  document.getElementById('ogTitle').content = t.metaTitle;
+  document.getElementById('ogDesc').content = t.metaDesc;
+  document.getElementById('ogImage').content = t.images[0];
+  document.getElementById('navTitle').textContent = t.title.replace('Sharm El Sheikh: ','');
+
+  const catMap = {safari:'Safari 🏍️','sea-trips':'Sea Trips ⛵',vibes:'Vibes ✨',transfers:'Transfers 🚗'};
+  document.getElementById('catPill').textContent = catMap[t.category] || t.category;
+  document.getElementById('tourTitle').textContent = t.title;
+  document.getElementById('tourTagline').textContent = t.tagline;
+  document.getElementById('ratingPill').textContent = `★ ${t.rating}`;
+  document.getElementById('reviewsCount').textContent = `${t.reviewCount} verified reviews`;
+  document.getElementById('infoDuration').textContent = t.duration;
+  document.getElementById('infoPickup').textContent = t.pickupTime;
+  document.getElementById('adultPriceEl').textContent = `$${t.price}`;
+  document.getElementById('childPriceEl').textContent = `$${t.childPrice}`;
+  document.getElementById('barAmount').textContent = `$${t.price}`;
+
+  // Guests
+  const colors = ['#0891b2','#059669','#7c3aed','#d97706','#dc2626'];
+  document.getElementById('guestAvatars').innerHTML = (t.guests||[]).slice(0,4).map((g,i) =>
+    `<div style="width:26px;height:26px;border-radius:50%;border:2px solid white;margin-left:${i===0?0:-7}px;background:${colors[i%colors.length]};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0">${g}</div>`
+  ).join('');
+  document.getElementById('guestText').innerHTML = `<strong>${t.reviewCount}+</strong> guests loved this tour<br/><span style="color:#f59e0b;font-size:11px">${'★'.repeat(Math.floor(t.rating))}</span>`;
+
+  document.getElementById('highlightsList').innerHTML = t.highlights.map(h =>
+    `<li><span class="hl-dot"></span>${h}</li>`).join('');
+  document.getElementById('includedList').innerHTML = t.included.map(i =>
+    `<li><span>✅</span><span>${i}</span></li>`).join('');
+  document.getElementById('notIncludedList').innerHTML = t.notIncluded.map(i =>
+    `<li><span>❌</span><span>${i}</span></li>`).join('');
+  document.getElementById('tourDesc').textContent = t.description;
+  document.getElementById('tourTip').textContent = t.tips;
+
+  initGallery(t.images);
+
+  const inCart = cart.find(c => c.id === t.id);
+  if (inCart) document.getElementById('heartFloat').textContent = '❤️';
+}
+
+function toggleHeart() {
+  const btn = document.getElementById('heartFloat');
+  const idx = cart.findIndex(c => c.id === currentTour.id);
+  if (idx > -1) {
+    cart.splice(idx, 1); btn.textContent = '🤍'; showToast('Removed from wishlist');
+  } else {
+    cart.push({id:currentTour.id,title:currentTour.title,price:currentTour.price,childPrice:currentTour.childPrice});
+    btn.textContent = '❤️'; btn.classList.add('liked'); showToast('Saved to wishlist ❤️');
+  }
+  saveCart();
+}
+
+function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+
+function bookNow() {
+  if (!cart.find(c => c.id === currentTour.id)) {
+    cart.push({id:currentTour.id,title:currentTour.title,price:currentTour.price,childPrice:currentTour.childPrice});
+    saveCart();
+  }
+  window.location.href = 'booking.html';
+}
+
+function shareWA() {
+  const msg = encodeURIComponent(`Check out this tour in Sharm El Sheikh! 🏖️\n${currentTour.title}\nFrom $${currentTour.price}/person\n${window.location.href}`);
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+function sharePost() {
+  if (navigator.share) navigator.share({title:document.title,url:window.location.href});
+  else copyLink();
+}
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied 🔗'));
+}
+
+currentTour = TOURS_DB[getTourId()] || TOURS_DB['snorkeling-ras-mohammed'];
+populatePage(currentTour);
+
+// Load WhatsApp number from admin
+(function(){
+  try {
+    const s = JSON.parse(localStorage.getItem('admin_social')||'{}');
+    const wa = s.wa || '201223373289';
+    const msg = s.waMsg || "Hi! I'd like to book an excursion in Sharm El Sheikh";
+    document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
+      a.href = 'https://wa.me/'+wa+'?text='+encodeURIComponent(msg);
+    });
+  } catch(e){}
+})(); // loadAdminWA
+</script>
+
+<!-- ADMIN LINK (hidden) -->
+<a href="admin.html" style="position:fixed;bottom:72px;left:10px;z-index:200;background:rgba(5,30,52,0.7);color:rgba(255,255,255,0.4);padding:4px 8px;border-radius:6px;font-size:9px;font-weight:700;text-decoration:none;letter-spacing:1px" title="Admin">⚙️</a>
+</body>
+</html>

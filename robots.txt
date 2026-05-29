@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sharmexcursions.com/sitemap.xml
+
+# Block booking confirmation pages from indexing
+Disallow: /booking.html
+Disallow: /wishlist.html

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us — Sharm Excursions | WhatsApp & Email</title>
+  <meta name="description" content="Contact Sharm Excursions by WhatsApp, email, or our online form. Available 24/7. Get an instant response about bookings, prices and custom tours."/>
+  <link rel="canonical" href="https://sharmexcursions.com/contact"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--sea:#051e34;--aqua:#0891b2;--teal:#0e7490;--gold:#b8860b;--gold-bright:#e6b822;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#0f172a;}
+    h1,h2,h3{font-family:'Playfair Display',serif;}
+    .top-nav{position:sticky;top:0;z-index:50;background:rgba(5,30,52,0.96);backdrop-filter:blur(16px);border-bottom:1px solid #e2e8f0;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+    .back-link{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;display:flex;align-items:center;justify-content:center;text-decoration:none;color:white;font-size:16px;}
+    .hero{background:linear-gradient(135deg,#064e3b,var(--teal));padding:55px 20px 44px;position:relative;overflow:hidden;}
+    .hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:28px;background:#f8fafc;border-radius:28px 28px 0 0;}
+    .contact-card{background:white;border-radius:20px;padding:18px;border:1px solid #e2e8f0;margin-bottom:12px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:all 0.25s;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .contact-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+    .contact-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+    .contact-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;font-weight:600;}
+    .contact-val{font-size:15px;font-weight:700;color:white;}
+    .contact-sub{font-size:12px;color:#64748b;margin-top:1px;}
+    .field-group{margin-bottom:14px;}
+    .field-label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;display:block;}
+    .field-input{width:100%;padding:13px 15px;border-radius:12px;border:1.5px solid #e2e8f0;font-size:14px;font-family:'DM Sans',sans-serif;background:white;transition:border-color 0.2s;outline:none;color:#0f172a;}
+    .field-input:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(8,145,178,0.1);}
+    .submit-btn{width:100%;padding:15px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--sea),var(--aqua));color:white;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;transition:all 0.3s;}
+    .submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(10,61,98,0.3);}
+    .form-card{background:white;border-radius:20px;padding:20px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;align-items:center;padding:10px 0 calc(10px + env(safe-area-inset-bottom));}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#94a3b8;font-size:10px;font-weight:500;transition:color 0.2s;}
+    .nav-item:hover{color:var(--aqua);}
+    .nav-icon{font-size:20px;}
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--sea);color:white;padding:10px 20px;border-radius:50px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .animate-in{animation:fadeUp 0.5s ease forwards;}
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="top-nav">
+  <a href="index.html" class="back-link">←</a>
+  <div><div class="font-bold text-sm" style="color:white">Contact Us</div><div class="text-xs text-slate-400">We're always here</div></div>
+</div>
+
+<div class="hero">
+  <div class="max-w-lg mx-auto relative z-10">
+    <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 mb-4 text-white/80 text-xs font-semibold">💬 24/7 Support</div>
+    <h1 class="text-3xl font-bold text-white mb-2">Get In Touch</h1>
+    <p class="text-white/70 text-sm">Questions, custom tour requests, group bookings — we respond within minutes via WhatsApp.</p>
+  </div>
+</div>
+
+<main class="px-4 pb-28 pt-5 max-w-lg mx-auto">
+
+  <!-- CONTACT CHANNELS -->
+  <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--aqua);font-weight:600;margin-bottom:12px">Reach Us Directly</div>
+
+  <a href="https://wa.me/201223373289" target="_blank" class="contact-card animate-in">
+    <div class="contact-icon" style="background:#dcfce7">💬</div>
+    <div>
+      <div class="contact-label">WhatsApp (Fastest)</div>
+      <div class="contact-val">+20 122 337 3289</div>
+      <div class="contact-sub">Typical response: under 5 minutes</div>
+    </div>
+    <span style="color:#10b981;font-size:20px;margin-left:auto">→</span>
+  </a>
+
+  <a href="tel:+20123456789" class="contact-card animate-in" style="animation-delay:0.05s;opacity:0">
+    <div class="contact-icon" style="background:#eff6ff">📞</div>
+    <div>
+      <div class="contact-label">Phone</div>
+      <div class="contact-val">+20 122 337 3289</div>
+      <div class="contact-sub">Available 7:00 AM – 10:00 PM (EET)</div>
+    </div>
+    <span style="color:var(--aqua);font-size:20px;margin-left:auto">→</span>
+  </a>
+
+  <a href="mailto:hello@sharmexcursions.com" class="contact-card animate-in" style="animation-delay:0.1s;opacity:0">
+    <div class="contact-icon" style="background:#fef3c7">✉️</div>
+    <div>
+      <div class="contact-label">Email</div>
+      <div class="contact-val">hello@sharmexcursions.com</div>
+      <div class="contact-sub">We reply within 2-4 hours</div>
+    </div>
+    <span style="color:var(--gold);font-size:20px;margin-left:auto">→</span>
+  </a>
+
+  <div class="contact-card animate-in" style="animation-delay:0.15s;opacity:0;cursor:default">
+    <div class="contact-icon" style="background:#f3e8ff">📍</div>
+    <div>
+      <div class="contact-label">Location</div>
+      <div class="contact-val">Naama Bay, Sharm El Sheikh</div>
+      <div class="contact-sub">South Sinai, Egypt · We come to you</div>
+    </div>
+  </div>
+
+  <!-- INQUIRY FORM -->
+  <div class="mt-6 mb-6 animate-in" style="animation-delay:0.2s;opacity:0">
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--aqua);font-weight:600;margin-bottom:12px">Send a Message</div>
+    <div class="form-card">
+      <div class="field-group">
+        <label class="field-label" for="c-name">Your Name *</label>
+        <input type="text" id="c-name" class="field-input" placeholder="John Smith"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="c-email">Email Address *</label>
+        <input type="email" id="c-email" class="field-input" placeholder="john@example.com"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="c-subject">Subject</label>
+        <select id="c-subject" class="field-input">
+          <option value="">Select a topic...</option>
+          <option>Booking enquiry</option>
+          <option>Custom group tour</option>
+          <option>Pricing question</option>
+          <option>Transfer booking</option>
+          <option>Complaint or feedback</option>
+          <option>Partnership enquiry</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label" for="c-msg">Message *</label>
+        <textarea id="c-msg" class="field-input" rows="4" style="resize:none;line-height:1.5" placeholder="Tell us how we can help..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <button class="submit-btn animate-in" onclick="sendMessage()" style="animation-delay:0.25s;opacity:0">
+    Send Message 📨
+  </button>
+
+  <!-- FAQ TEASER -->
+  <div class="mt-8 animate-in" style="animation-delay:0.3s;opacity:0">
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--aqua);font-weight:600;margin-bottom:12px">Quick Answers</div>
+    <div class="space-y-3">
+      <details class="bg-white rounded-16px p-4 border border-slate-100 rounded-2xl">
+        <summary class="font-semibold text-sm cursor-pointer" style="color:white">Do I need to pay in advance?</summary>
+        <p class="text-sm text-slate-500 mt-2 leading-relaxed">No. All our tours operate on a pay-on-arrival basis. You reserve your spot via WhatsApp for free, and pay cash directly to the guide on the day of your tour.</p>
+      </details>
+      <details class="bg-white rounded-2xl p-4 border border-slate-100">
+        <summary class="font-semibold text-sm cursor-pointer" style="color:white">Is hotel pickup really free?</summary>
+        <p class="text-sm text-slate-500 mt-2 leading-relaxed">Absolutely. Every excursion price includes door-to-door hotel pickup and drop-off from any hotel in Sharm El Sheikh. No extra charges, ever.</p>
+      </details>
+      <details class="bg-white rounded-2xl p-4 border border-slate-100">
+        <summary class="font-semibold text-sm cursor-pointer" style="color:white">Can I book a private tour for my group?</summary>
+        <p class="text-sm text-slate-500 mt-2 leading-relaxed">Yes! We offer fully private tours for families, couples, and corporate groups. WhatsApp us with your group size and preferred dates for a custom quote.</p>
+      </details>
+      <details class="bg-white rounded-2xl p-4 border border-slate-100">
+        <summary class="font-semibold text-sm cursor-pointer" style="color:white">What languages do your guides speak?</summary>
+        <p class="text-sm text-slate-500 mt-2 leading-relaxed">Our guides speak English, Arabic, Italian, Russian and German. Let us know your preferred language when booking and we'll match you with the right guide.</p>
+      </details>
+    </div>
+  </div>
+
+</main>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Home</span></a>
+  <a href="index.html#tours" class="nav-item"><span class="nav-icon">🏍️</span><span>Safari</span></a>
+  <a href="booking.html" class="nav-item"><span class="nav-icon">🛒</span><span>Book</span></a>
+  <a href="wishlist.html" class="nav-item"><span class="nav-icon">❤️</span><span>Saved</span></a>
+  <a href="about.html" class="nav-item"><span class="nav-icon">ℹ️</span><span>About</span></a>
+</nav>
+
+<script>
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function sendMessage(){
+  const name=document.getElementById('c-name').value.trim();
+  const email=document.getElementById('c-email').value.trim();
+  const subject=document.getElementById('c-subject').value;
+  const msg=document.getElementById('c-msg').value.trim();
+  if(!name||!email||!msg){showToast('⚠️ Please fill all required fields');return;}
+  const waMsg=encodeURIComponent(`📩 *New Contact Form Message*\n\n👤 Name: ${name}\n✉️ Email: ${email}\n📋 Subject: ${subject||'General'}\n\n💬 Message:\n${msg}`);
+  window.open(`https://wa.me/201223373289?text=${waMsg}`,'_blank');
+  showToast('✅ Message sent! We\'ll reply shortly.');
+  document.getElementById('c-name').value='';
+  document.getElementById('c-email').value='';
+  document.getElementById('c-msg').value='';
+}
+
+// Load WhatsApp number from admin
+(function(){
+  try {
+    const s = JSON.parse(localStorage.getItem('admin_social')||'{}');
+    const wa = s.wa || '201223373289';
+    const msg = s.waMsg || "Hi! I'd like to book an excursion in Sharm El Sheikh";
+    document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
+      a.href = 'https://wa.me/'+wa+'?text='+encodeURIComponent(msg);
+    });
+  } catch(e){}
+})(); // loadAdminWA
+</script>
+
+<!-- ADMIN LINK (hidden) -->
+<a href="admin.html" style="position:fixed;bottom:72px;left:10px;z-index:200;background:rgba(5,30,52,0.7);color:rgba(255,255,255,0.4);padding:4px 8px;border-radius:6px;font-size:9px;font-weight:700;text-decoration:none;letter-spacing:1px" title="Admin">⚙️</a>
+</body>
+</html>
